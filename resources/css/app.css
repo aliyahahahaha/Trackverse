@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@plugin "flyonui";
+
+@import "../../node_modules/flyonui/variants.css";
+
+@source "../../node_modules/flyonui/dist/*.js";
+
+html,
+body {
+    height: 100% !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+:root {
+    --sidebar-width: 290px;
+}
+
+@media (min-width: 1024px) {
+    #layout-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: var(--sidebar-width) !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        z-index: 50 !important;
+        background-color: var(--color-base-100) !important;
+        overflow: hidden !important;
+        border-right: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    }
+
+    #layout-sidebar-content {
+        height: 100% !important;
+        overflow-y: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    #layout-main-container {
+        margin-left: var(--sidebar-width) !important;
+        width: calc(100% - var(--sidebar-width)) !important;
+        min-height: 100vh !important;
+    }
+}
+
+/* Global Smoothness */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Base interactive transitions */
+a,
+button,
+.card,
+.badge,
+.dropdown-content,
+.menu-item {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Card Lift */
+.card-hover-scale {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-hover-scale:hover {
+    transform: translateY(-4px) scale(1.01);
+}
+
+/* Smooth Sidebar Active State */
+.menu-active {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background-color: var(--color-primary);
+    border-radius: 0 4px 4px 0;
+}
+
+/* Slow Spin for "Open" status icon */
+.animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+[data-theme='dark'] li:not(.menu-title, .menu-disabled)> :not(ul, .menu-title, .collapse, .accordion-content, .btn).menu-active {
+    background-color: color-mix(in oklab, var(--color-primary) 15%, transparent);
+    color: var(--color-primary);
+}
+
+body {
+    color: color-mix(in oklab, var(--color-base-content) 85%, transparent);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.auth-background {
+    background-image: url('/images/auth-background-2.png');
+}
+
+/* Custom Scrollbar for better consistency */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-base-content/10);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary/30);
+}
