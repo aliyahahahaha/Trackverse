@@ -19,41 +19,104 @@ class PermissionsController extends Controller
         ];
 
         $permissions = [
+            // Project Management
             [
                 'id' => 1,
+                'name' => 'View Projects',
+                'description' => 'Can view project details',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
+            ],
+            [
+                'id' => 2,
                 'name' => 'Create Projects',
                 'description' => 'Can create new projects',
                 'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
             ],
             [
-                'id' => 2,
+                'id' => 3,
+                'name' => 'Edit Projects',
+                'description' => 'Can update project details',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
+            ],
+            [
+                'id' => 4,
                 'name' => 'Delete Projects',
                 'description' => 'Can remove existing projects',
                 'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
             ],
+
+            // Task Management
             [
-                'id' => 3,
-                'name' => 'Manage Users',
-                'description' => 'Can add or remove users',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
-            [
-                'id' => 4,
-                'name' => 'View Reports',
-                'description' => 'Access to analytics and reports',
+                'id' => 5,
+                'name' => 'Create Tasks',
+                'description' => 'Can assign new tasks',
                 'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
             ],
             [
-                'id' => 5,
+                'id' => 6,
                 'name' => 'Edit Tasks',
                 'description' => 'Can modify task details',
                 'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
             ],
             [
-                'id' => 6,
-                'name' => 'Manage Roles',
-                'description' => 'Can change user roles',
+                'id' => 7,
+                'name' => 'Delete Tasks',
+                'description' => 'Can remove tasks',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
+            ],
+
+            // Ticket Management
+            [
+                'id' => 8,
+                'name' => 'Create Tickets',
+                'description' => 'Can raise support tickets',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
+            ],
+            [
+                'id' => 9,
+                'name' => 'Resolve Tickets',
+                'description' => 'Can mark tickets as resolved',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
+            ],
+            [
+                'id' => 10,
+                'name' => 'Delete Tickets',
+                'description' => 'Can permanently remove tickets',
                 'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
+            ],
+
+            // User Management
+            [
+                'id' => 11,
+                'name' => 'Manage Users',
+                'description' => 'Can add, edit, or remove users',
+                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
+            ],
+            [
+                'id' => 12,
+                'name' => 'Manage Roles',
+                'description' => 'Can assign roles to users',
+                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
+            ],
+
+            // System Features
+            [
+                'id' => 13,
+                'name' => 'Manage Announcements',
+                'description' => 'Can post system-wide announcements',
+                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
+            ],
+            [
+                'id' => 14,
+                'name' => 'Manage Deployments',
+                'description' => 'Access to deployment controls',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
+            ],
+            [
+                'id' => 15,
+                'name' => 'View Reports',
+                'description' => 'Access to analytics and system reports',
+                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
             ],
         ];
 

@@ -241,6 +241,104 @@
                 </div>
             </div>
         </form>
+
+        <!-- Security / 2FA Section (Outside main form) -->
+                <div class="card bg-base-100 shadow-2xl shadow-base-content/[0.03] border border-base-content/5 rounded-[2rem] overflow-hidden mt-8">
+                    <div class="card-body p-14 pt-16 pb-14">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 flex items-center gap-2.5 mb-8">
+                            <div class="size-1.5 bg-error/40 rounded-full"></div>
+                            Two-Factor Authentication
+                        </h3>
+
+                        @if(! auth()->user()->two_factor_secret)
+                            {{-- State: Not Enabled --}}
+                            <div class="space-y-6">
+                                <div class="max-w-xl">
+                                    <h4 class="text-base font-bold text-base-content mb-3">Add additional security</h4>
+                                    <p class="text-sm text-base-content/60 leading-relaxed">Enable two-factor authentication to protect your account with a secure, random token.</p>
+                                </div>
+                                <form method="POST" action="{{ route('two-factor.enable') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary font-black uppercase tracking-widest text-[10px] rounded-xl px-6 min-h-[44px] h-11">
+                                        Enable 2FA
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            {{-- State: Enabled (Confirmed or Unconfirmed) --}}
+                            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-10 border-b border-base-content/5 pb-10">
+                                <div>
+                                    <h4 class="text-base font-bold text-base-content mb-2 flex items-center gap-2">
+                                        2FA is currently enabled
+                                        @if(! auth()->user()->two_factor_confirmed_at)
+                                            <span class="badge badge-warning badge-xs text-[9px] font-black uppercase tracking-wider">Finish Setup</span>
+                                        @else
+                                            <span class="badge badge-success badge-xs text-[9px] font-black uppercase tracking-wider">Active</span>
+                                        @endif
+                                    </h4>
+                                    <p class="text-sm text-base-content/60 leading-relaxed max-w-md">Your account is secured. authentication tokens are required for login.</p>
+                                </div>
+                                <form method="POST" action="{{ route('two-factor.disable') }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-error btn-outline font-black uppercase tracking-widest text-[10px] rounded-xl px-6 min-h-[44px] h-11 hover:text-white">
+                                        Disable 2FA
+                                    </button>
+                                </form>
+                            </div>
+
+                            @if(session('status') == 'two-factor-authentication-enabled' || ! auth()->user()->two_factor_confirmed_at)
+                                {{-- Setup / Confirmation Step --}}
+                                <div class="bg-base-200/50 rounded-2xl p-8 border border-base-content/5 mb-10">
+                                    <p class="font-bold text-sm text-base-content mb-5">
+                                        1. Scan this QR code with your authenticator app (Google Auth, Authy, etc).
+                                    </p>
+                                    <div class="p-4 bg-white inline-block rounded-xl border border-base-content/10 shadow-sm mb-8">
+                                        {!! request()->user()->twoFactorQrCodeSvg() !!}
+                                    </div>
+
+                                    <p class="font-bold text-sm text-base-content mb-5">
+                                        2. Enter the code from your app to confirm.
+                                    </p>
+                                    <form method="POST" action="{{ route('two-factor.confirm') }}" class="flex items-start gap-4">
+                                        @csrf
+                                        <div class="form-control">
+                                            <input type="text" name="code" class="input bg-base-100 border-base-content/10 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-xl w-40 font-mono text-center tracking-widest" placeholder="123 456" inputmode="numeric">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary font-black uppercase tracking-widest text-[10px] rounded-xl">Confirm</button>
+                                    </form>
+                                    @error('code') <span class="text-[10px] text-error mt-2 font-black uppercase tracking-widest block">{{ $message }}</span> @enderror
+                                </div>
+                            @endif
+
+                            @if(auth()->user()->two_factor_confirmed_at)
+                                {{-- Recovery Codes --}}
+                                <div>
+                                     <div class="flex items-center justify-between mb-5">
+                                         <h4 class="text-sm font-bold text-base-content">Recovery Codes</h4>
+                                         <form method="POST" action="{{ route('two-factor.recovery-codes') }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary btn-xs font-bold uppercase tracking-widest">Regenerate</button>
+                                         </form>
+                                     </div>
+                                     <div class="bg-base-content/[0.02] rounded-xl p-5 border border-base-content/5">
+                                         <div class="grid grid-cols-2 gap-x-4 gap-y-3 font-mono text-xs text-base-content/70">
+                                            @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
+                                                <div class="flex items-center gap-2">
+                                                    <div class="size-1.5 rounded-full bg-base-content/20"></div>
+                                                    {{ $code }}
+                                                </div>
+                                            @endforeach
+                                         </div>
+                                     </div>
+                                     <p class="text-[10px] text-base-content/40 font-medium mt-4 leading-relaxed">
+                                        Store these codes in a secure password manager. They can be used to access your account if you lose your device.
+                                     </p>
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+                </div>
     </div>
 
     <!-- Image Preview Script -->

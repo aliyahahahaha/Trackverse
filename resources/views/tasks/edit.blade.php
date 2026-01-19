@@ -43,7 +43,7 @@
     </x-slot>
 
     <div class="w-full max-w-3xl mx-auto px-4 mt-12 mb-20">
-        <div class="card bg-base-100 border border-base-content/5 shadow-2xl shadow-base-content/[0.03] rounded-[2rem] overflow-hidden">
+        <div class="card bg-base-100 border border-base-content/5 shadow-2xl shadow-base-content/[0.03] rounded-[2rem]">
             <!-- Card Header Section -->
             <div class="px-8 pt-8 pb-4">
                 <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 flex items-center gap-2.5">

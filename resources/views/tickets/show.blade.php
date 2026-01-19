@@ -196,10 +196,8 @@
                                                     {{ $response->created_at->diffForHumans() }}
                                                 </span>
                                             </div>
-                                            <div class="p-4 rounded-2xl bg-base-200/30 border border-base-content/5">
-                                                <p
-                                                    class="text-sm text-base-content/70 leading-relaxed font-medium whitespace-pre-wrap">
-                                                    {{ $response->content }}</p>
+                                            <div class="p-4 rounded-2xl bg-base-200/30 border border-base-content/5 w-fit max-w-[90%]">
+                                                <p class="text-sm text-base-content/70 leading-relaxed font-medium whitespace-pre-wrap text-left">{{ $response->content }}</p>
                                             </div>
                                         </div>
                                     </div>

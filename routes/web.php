@@ -5,7 +5,7 @@ use App\Http\Controllers\AvailabilityController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
@@ -84,6 +84,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Add POST route for updating availability
     Route::post('/availability', [AvailabilityController::class, 'update'])->name('availability.update');
+
+    // Calendar routes
+    Route::get('/calendar', [\App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [\App\Http\Controllers\CalendarController::class, 'events'])->name('calendar.events');
 
     Route::resource('announcements', \App\Http\Controllers\AnnouncementController::class);
     Route::resource('permissions', \App\Http\Controllers\PermissionsController::class)->only(['index', 'create', 'store', 'update']);

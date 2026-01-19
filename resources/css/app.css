@@ -1,10 +1,19 @@
 @import "tailwindcss";
-
 @plugin "flyonui";
 
 @import "../../node_modules/flyonui/variants.css";
 
-@source "../../node_modules/flyonui/dist/*.js";
+@source "../../node_modules/flyonui/dist/js/*.js";
+
+@layer base {
+
+    :root,
+    [data-theme="light"] {
+        --color-primary: oklch(0.496 0.265 301.924);
+        /* #7e22ce */
+        --color-primary-content: oklch(1 0 0);
+    }
+}
 
 html,
 body {
@@ -128,10 +137,10 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--color-base-content/10);
+    background: color-mix(in oklab, var(--color-base-content), transparent 90%);
     border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--color-primary/30);
+    background: color-mix(in oklab, var(--color-primary), transparent 70%);
 }

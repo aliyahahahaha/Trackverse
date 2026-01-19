@@ -58,36 +58,40 @@
                                 ])->toArray();
                             @endphp
                             <x-ui.advance-select name="project_id" id="modal_project_id"
-                                placeholder="Choose a project..." onchange="filterModalMembers()"
-                                :options="$projectOptions" :multiple="false" />
+                                placeholder="Choose a project..." :options="$projectOptions" :multiple="false" />
                         </div>
                     </div>
 
                     <!-- Assign To Member -->
                     <div class="card bg-base-100 rounded-2xl ring-1 ring-base-content/5 shadow-sm p-6">
                         <div class="flex flex-col gap-6">
-                            <div class="flex items-center justify-between">
-                                <div class="space-y-1.5">
-                                    <h3 class="text-sm font-bold text-base-content">Assignee</h3>
-                                    <p class="text-[11px] text-base-content/50 font-medium leading-none">Choose who will
-                                        handle this</p>
-                                </div>
-                                <!-- Smart Assignment: Compact Row -->
-                                <div
-                                    class="flex items-center gap-3 bg-base-200/40 px-3 py-1.5 rounded-xl border border-base-content/5">
-                                    <div class="flex flex-col items-end">
-                                        <span
-                                            class="text-[9px] font-bold text-base-content/40 uppercase tracking-widest">Auto
-                                            Reassign</span>
-                                        <span class="text-[8px] text-primary font-bold italic">Smart Escalation</span>
+                            <div id="assignee-container" class="flex flex-col gap-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="space-y-1">
+                                        <h3 class="text-sm font-bold text-base-content">Assignee</h3>
+                                        <p class="text-[10px] text-base-content/40 font-medium leading-none">Choose who
+                                            will handle this</p>
                                     </div>
-                                    <input type="checkbox" id="modal_escalate" class="toggle toggle-primary toggle-xs"
-                                        onchange="toggleModalEscalation()" />
+                                    <!-- Smart Assignment Toggle -->
+                                    <div
+                                        class="flex items-center gap-2 bg-base-200/50 px-2 pointer-events-auto shadow-sm py-1 rounded-lg border border-base-content/5">
+                                        <div class="flex flex-col items-end mr-1">
+                                            <span
+                                                class="text-[8px] font-bold text-base-content/40 uppercase tracking-tighter">Smart</span>
+                                            <span
+                                                class="text-[8px] text-primary font-black italic leading-none">Escalate</span>
+                                        </div>
+                                        <input type="checkbox" id="modal_escalate"
+                                            class="toggle toggle-primary toggle-xs"
+                                            onchange="toggleModalEscalation()" />
+                                    </div>
+                                </div>
+
+                                <div id="assignee-select-wrapper" class="w-full relative min-h-[40px]">
+                                    <x-ui.advance-select name="assigned_to" id="modal_assigned_to"
+                                        placeholder="Choose team member..." :options="[]" :multiple="false" />
                                 </div>
                             </div>
-
-                            <x-ui.advance-select name="assigned_to" id="modal_assigned_to"
-                                placeholder="Choose team member..." :options="[]" :multiple="false" />
                         </div>
                     </div>
                 </div>
@@ -300,52 +304,143 @@
         </form>
     </div>
 
-    <!-- Re-using existing scripts with updated selector IDs -->
+    <!-- Dynamic Member Filtering Script -->
     <script>
+        // Store project and system user data
+        const projectsData = @json($projects->keyBy('id')->toArray());
+        window.allSystemUsers = @json($allUsers);
+
         function filterModalMembers() {
-            const projectSelect = document.getElementById('modal_project_id');
-            const memberSelect = document.getElementById('modal_assigned_to');
-            const escalateCheckbox = document.getElementById('modal_escalate');
+            const pEl = document.getElementById('modal_project_id');
+            const mEl = document.getElementById('modal_assigned_to');
+            const eEl = document.getElementById('modal_escalate');
 
-            if (!projectSelect.value) return;
+            if (!pEl || !mEl || !window.HSSelect) return;
 
-            const projectsData = @json($projects->keyBy('id'));
-            const selectedProject = projectsData[projectSelect.value];
-            const members = selectedProject ? selectedProject.members : [];
+            const pId = pEl.value;
 
-            memberSelect.innerHTML = '<option value="">Select Member</option>';
+            // Clear existing options
+            mEl.innerHTML = '<option value="">Choose team member...</option>';
 
-            const usersSource = escalateCheckbox.checked ? (window.allSystemUsers || []) : members;
+            if (pId && projectsData[pId]) {
+                const project = projectsData[pId];
+                const members = project.members ? (Array.isArray(project.members) ? project.members : Object.values(project.members)) : [];
+                const source = (eEl && eEl.checked) ? (window.allSystemUsers || []) : members;
 
-            usersSource.forEach(user => {
-                const availability = user.today_availability;
-                const status = availability ? availability.status : 'present';
+                source.forEach(user => {
+                    if (!user || !user.id) return;
+                    const opt = document.createElement('option');
+                    opt.value = user.id;
+                    opt.text = user.name || 'Unknown';
+                    const avatar = user.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(opt.text)}&background=random`;
+                    opt.setAttribute('data-select-option', JSON.stringify({
+                        description: user.email || '',
+                        icon: `<img class="w-full h-full object-cover rounded" src="${avatar}" />`
+                    }));
+                    if (user.today_availability) {
+                        const s = user.today_availability.status;
+                        if (s === 'medical_leave') opt.text += ' (Leave)';
+                        else if (s === 'vacation') opt.text += ' (Vacation)';
+                        else if (s === 'present') opt.text += ' (Available)';
+                    }
+                    mEl.appendChild(opt);
+                });
+            }
 
-                if (!escalateCheckbox.checked && status !== 'present') return;
+            // Refresh the UI
+            refreshMemberSelect();
+        }
 
-                const option = document.createElement('option');
-                option.value = user.id;
+        function refreshMemberSelect() {
+            const el = document.getElementById('modal_assigned_to');
+            if (!el || !window.HSSelect) return;
 
-                const avatar = user.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
-                option.setAttribute('data-select-option', JSON.stringify({
-                    description: user.email,
-                    icon: `<img class="w-full h-full object-cover rounded" src="${avatar}" />`
-                }));
+            try {
+                // 1. Destroy existing instance completely
+                const instance = HSSelect.getInstance(el);
+                if (instance) {
+                    instance.destroy();
+                }
 
-                let statusLabel = '';
-                if (status === 'medical_leave') statusLabel = ' (Leave)';
-                else if (status === 'vacation') statusLabel = ' (Vacation)';
-                else if (status === 'present') statusLabel = ' (Available)';
+                // 2. Remove all generated UI elements (siblings of the select)
+                const parent = el.parentNode;
+                if (parent) {
+                    const siblings = Array.from(parent.children).filter(c => c !== el);
+                    siblings.forEach(s => s.remove());
+                }
 
-                option.text = user.name + statusLabel;
-                memberSelect.appendChild(option);
-            });
+                // 3. Get the configuration
+                const configStr = el.getAttribute('data-select');
+                const config = configStr ? JSON.parse(configStr) : {};
 
-            if (window.HSSelect) {
-                const selectInstance = HSSelect.getInstance(memberSelect);
-                if (selectInstance) selectInstance.destroy();
-                const sourceConfig = projectSelect.getAttribute('data-select') ? JSON.parse(projectSelect.getAttribute('data-select')) : {};
-                new HSSelect(memberSelect, { ...sourceConfig, placeholder: 'Choose team member...' });
+                // 4. Make sure the select is visible for initialization
+                el.classList.remove('hidden');
+                el.style.display = '';
+
+                // 5. Reinitialize with a slight delay to ensure DOM is ready
+                setTimeout(() => {
+                    const newInstance = new HSSelect(el, config);
+                    
+                    // 6. Add manual handlers to ensure dropdown works properly
+                    setTimeout(() => {
+                        const toggle = parent.querySelector('.advance-select-toggle, button[data-hs-select-toggle]');
+                        const menu = parent.querySelector('.advance-select-menu, .hs-select-menu');
+                        
+                        if (toggle && menu) {
+                            // Add toggle click handler
+                            toggle.addEventListener('click', function(e) {
+                                const isHidden = menu.classList.contains('hidden') || 
+                                               getComputedStyle(menu).display === 'none';
+                                
+                                if (isHidden) {
+                                    menu.classList.remove('hidden');
+                                    menu.style.display = 'block';
+                                    menu.style.opacity = '1';
+                                    menu.style.visibility = 'visible';
+                                    toggle.setAttribute('aria-expanded', 'true');
+                                } else {
+                                    menu.classList.add('hidden');
+                                    menu.style.display = 'none';
+                                    toggle.setAttribute('aria-expanded', 'false');
+                                }
+                            });
+                            
+                            // Handle option clicks
+                            const options = menu.querySelectorAll('.advance-select-option, [data-value]');
+                            options.forEach(option => {
+                                option.addEventListener('click', function(e) {
+                                    const value = this.getAttribute('data-value');
+                                    if (value) {
+                                        el.value = value;
+                                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                                        
+                                        // Close the menu
+                                        menu.classList.add('hidden');
+                                        menu.style.display = 'none';
+                                        toggle.setAttribute('aria-expanded', 'false');
+                                        
+                                        // Update summary
+                                        if (typeof syncSummary === 'function') syncSummary();
+                                    }
+                                });
+                            });
+                            
+                            // Close dropdown when clicking outside
+                            document.addEventListener('click', function closeDropdown(e) {
+                                if (!parent.contains(e.target)) {
+                                    menu.classList.add('hidden');
+                                    menu.style.display = 'none';
+                                    toggle.setAttribute('aria-expanded', 'false');
+                                }
+                            });
+                        }
+                        
+                        // Update summary
+                        if (typeof syncSummary === 'function') syncSummary();
+                    }, 100);
+                }, 150);
+            } catch (err) {
+                console.error('Refresh error:', err);
             }
         }
 
@@ -379,8 +474,11 @@
             document.getElementById('summary-project').textContent = (pSelected && pSelected.value) ? pSelected.text : '—';
 
             const memberSelect = document.getElementById('modal_assigned_to');
-            const mSelected = memberSelect.options[memberSelect.selectedIndex];
-            document.getElementById('summary-member').textContent = (mSelected && mSelected.value) ? mSelected.text : '—';
+            const summaryMember = document.getElementById('summary-member');
+            if (memberSelect && summaryMember) {
+                const mSelected = memberSelect.options[memberSelect.selectedIndex];
+                summaryMember.textContent = (mSelected && mSelected.value) ? mSelected.text : '—';
+            }
 
             const categorySelect = document.querySelector('select[name="category"]');
             const cSelected = categorySelect.options[categorySelect.selectedIndex];
@@ -399,6 +497,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const projectSelect = document.getElementById('modal_project_id');
+            if (projectSelect) {
+                projectSelect.addEventListener('change', filterModalMembers);
+            }
+
             document.querySelectorAll('input, select').forEach(el => {
                 el.addEventListener('change', syncSummary);
                 el.addEventListener('input', syncSummary);

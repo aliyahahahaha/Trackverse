@@ -137,6 +137,7 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         $this->authorizeTicketAccess($ticket);
+        $user = auth()->user();
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',

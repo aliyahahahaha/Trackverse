@@ -161,7 +161,7 @@
                                         </div>
                                     @else
                                         <div
-                                            class="badge bg-neutral/10 text-neutral-content border-none rounded-lg font-black text-[10px] uppercase tracking-widest py-3 px-3 gap-2">
+                                            class="badge bg-success/10 text-success border-none rounded-lg font-black text-[10px] uppercase tracking-widest py-3 px-3 gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round">

@@ -26,8 +26,12 @@
         (function () {
             try {
                 const root = document.documentElement;
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                root.setAttribute('data-theme', savedTheme);
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                let resolvedTheme = savedTheme;
+                if (savedTheme === 'system') {
+                    resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                root.setAttribute('data-theme', resolvedTheme);
             } catch (e) {
                 console.warn('Early theme script error:', e);
             }
@@ -82,7 +86,7 @@
     </div>
 
     <!-- FlyonUI JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/flyonui@1.1.0/dist/js/index.min.js"></script>
+
 
     <script>
         document.addEventListener('submit', function (e) {

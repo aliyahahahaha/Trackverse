@@ -101,76 +101,15 @@
                 <div class="swiper announcement-swiper">
                     <div class="swiper-wrapper">
                         @foreach($announcements as $announcement)
-                            <div class="swiper-slide h-auto">
-                                <div class="announcement-card h-full p-8 sm:p-12">
-                                    <div class="flex flex-col lg:flex-row gap-8 items-center">
+                            <div class="swiper-slide h-auto p-1">
+                                <!-- Outer container: full width, overflow hidden -->
+                                <div class="announcement-card w-full max-w-full overflow-hidden bg-white rounded-[28px] border border-black/5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)]">
+                                    <!-- Grid Wrapper: 1 col on mobile, fixed 360px sidebar on LEFT for desktop -->
+                                    <div class="grid gap-6 md:gap-10 items-center grid-cols-1 md:grid-cols-[360px_minmax(0,1fr)] p-6 sm:p-10 h-full">
                                         
-                                        <!-- LEFT COLUMN: Information Panel -->
-                                        <div class="flex-1 flex flex-col justify-center gap-6 text-left order-last lg:order-first min-w-0 w-full">
-                                            <!-- Top Badges -->
-                                            <div class="flex items-center gap-3">
-                                                @if($announcement->type === 'success')
-                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm"
-                                                          style="background-color: #f0fdf4; color: #15803d; border-color: #dcfce7;">
-                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #22c55e;"></div>
-                                                        Success
-                                                    </span>
-                                                @elseif($announcement->type === 'warning')
-                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm"
-                                                          style="background-color: #fefce8; color: #a16207; border-color: #fef9c3;">
-                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #eab308;"></div>
-                                                        Warning
-                                                    </span>
-                                                @elseif($announcement->type === 'error')
-                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm"
-                                                          style="background-color: #fef2f2; color: #b91c1c; border-color: #fee2e2;">
-                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #ef4444;"></div>
-                                                        Critical
-                                                    </span>
-                                                @else
-                                                    <!-- Default / Info -->
-                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm"
-                                                          style="background-color: #eff6ff; color: #1d4ed8; border-color: #dbeafe;">
-                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #3b82f6;"></div>
-                                                        Information
-                                                    </span>
-                                                @endif
-                                                <span class="inline-flex px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest border border-slate-100 shadow-sm">
-                                                    {{ $announcement->created_at->format('M d, Y') }}
-                                                </span>
-                                            </div>
-
-                                            <!-- Content Body -->
-                                            <div class="space-y-3">
-                                                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-800 tracking-tight leading-tight transition-colors hover:text-blue-600 cursor-default line-clamp-2">
-                                                    {{ $announcement->title }}
-                                                </h3>
-                                                <p class="text-slate-500 text-base leading-relaxed line-clamp-3 font-medium max-w-3xl">
-                                                    {{ $announcement->content }}
-                                                </p>
-                                            </div>
-
-                                            <!-- Link & Meta -->
-                                            <div class="flex flex-col sm:flex-row sm:items-center gap-5 pt-1">
-                                                <a href="{{ route('announcements.index') }}" class="btn btn-sm bg-blue-600 hover:bg-blue-700 border-none text-white px-6 h-10 rounded-lg flex items-center justify-center gap-2 w-fit font-black text-[10px] uppercase tracking-widest transition-all shadow-md shadow-blue-500/20 active:scale-95 group">
-                                                    Read More
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>
-                                                </a>
-                                                <div class="flex items-center gap-2 text-slate-400">
-                                                    <div class="p-1 bg-slate-100 rounded-md">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7l0 5l3 3" /></svg>
-                                                    </div>
-                                                    <span class="text-[9px] font-black uppercase tracking-widest opacity-60">Posted {{ $announcement->created_at->diffForHumans() }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- RIGHT COLUMN: Poster Panel (Strict Fixed Dimensions - Moderate Size) -->
-                                        <div class="shrink-0 order-first lg:order-last">
-                                            <!-- Unified Strict Container -->
-                                            <div class="relative rounded-2xl overflow-hidden shadow-lg border border-slate-100 group bg-slate-50" 
-                                                 style="width: 280px; height: 180px; min-width: 280px; max-width: 280px;">
-                                                
+                                        <!-- Media Column (Left on Desktop, Top on Mobile) -->
+                                        <div class="announcement-media w-full h-[220px] md:h-[240px] shrink-0">
+                                            <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 group bg-slate-50">
                                                 @if($announcement->image_path)
                                                     <img src="{{ Storage::url($announcement->image_path) }}" 
                                                         class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -183,6 +122,63 @@
                                                         <span class="text-[9px] font-black uppercase tracking-widest opacity-60 group-hover:text-blue-400">No poster available</span>
                                                     </div>
                                                 @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Content Column (Right on Desktop, Bottom on Mobile) -->
+                                        <div class="announcement-content min-w-0 flex flex-col gap-5 text-left">
+                                            
+                                            <!-- Top Meta -->
+                                            <div class="flex flex-wrap items-center gap-3">
+                                                @if($announcement->type === 'success')
+                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm bg-green-50 text-green-700 border-green-100">
+                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse bg-green-500"></div>
+                                                        Success
+                                                    </span>
+                                                @elseif($announcement->type === 'warning')
+                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm bg-yellow-50 text-yellow-800 border-yellow-100">
+                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse bg-yellow-500"></div>
+                                                        Warning
+                                                    </span>
+                                                @elseif($announcement->type === 'error')
+                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm bg-red-50 text-red-700 border-red-100">
+                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse bg-red-500"></div>
+                                                        Critical
+                                                    </span>
+                                                @else
+                                                    <!-- Default / Info -->
+                                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm bg-blue-50 text-blue-700 border-blue-100">
+                                                        <div class="w-1.5 h-1.5 rounded-full animate-pulse bg-blue-500"></div>
+                                                        Information
+                                                    </span>
+                                                @endif
+                                                <span class="inline-flex px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest border border-slate-100 shadow-sm">
+                                                    {{ $announcement->created_at->format('M d, Y') }}
+                                                </span>
+                                            </div>
+
+                                            <!-- Text Content -->
+                                            <div class="space-y-3">
+                                                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-800 tracking-tight leading-tight line-clamp-2 break-words">
+                                                    {{ $announcement->title }}
+                                                </h3>
+                                                <p class="text-slate-500 text-sm sm:text-base leading-relaxed line-clamp-3 font-medium break-words">
+                                                    {{ $announcement->content }}
+                                                </p>
+                                            </div>
+
+                                            <!-- Buttons / Footer -->
+                                            <div class="flex flex-wrap items-center gap-4 pt-2">
+                                                <button type="button" data-overlay="#announcement-modal-{{ $announcement->id }}" class="btn btn-sm bg-blue-600 hover:bg-blue-700 border-none text-white px-6 h-10 rounded-lg flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all group shrink-0">
+                                                    Read More
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>
+                                                </button>
+                                                <div class="flex items-center gap-2 text-slate-400">
+                                                    <div class="p-1 bg-slate-100 rounded-md">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7l0 5l3 3" /></svg>
+                                                    </div>
+                                                    <span class="text-[9px] font-black uppercase tracking-widest opacity-60">Posted {{ $announcement->created_at->diffForHumans() }}</span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -234,6 +230,7 @@
                 });
             </script>
         @endpush
+        @include('announcements.partials.show-modal')
     @endif
 
     <!-- Base Layout Stats Grid -->

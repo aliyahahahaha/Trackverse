@@ -100,20 +100,12 @@
                                     </label>
                                     <div class="relative">
                                         <select name="status" id="status" onchange="updateSummary()"
-                                            class="select select-lg w-full h-14 bg-base-200/30 border-none rounded-2xl focus:bg-base-100 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm appearance-none">
+                                            class="select select-lg w-full h-14 bg-base-200/30 border border-base-content/10 rounded-2xl focus:bg-base-100 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm">
                                             <option value="planning" selected>Planning</option>
                                             <option value="active">Active</option>
                                             <option value="on_hold">On Hold</option>
                                             <option value="completed">Completed</option>
                                         </select>
-                                        <div
-                                            class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-base-content/30">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2.5"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M6 9l6 6l6 -6" />
-                                            </svg>
-                                        </div>
                                     </div>
                                 </div>
 

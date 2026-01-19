@@ -1,16 +1,46 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-base-content leading-tight flex items-center gap-2">
-                <span class="icon-[tabler--news] size-6 text-primary"></span>
-                {{ __('Announcements') }}
-            </h2>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="badge badge-lg font-bold text-[10px] uppercase tracking-widest bg-primary/5 text-primary border-0">
+                        Broadcasting</div>
+                    <div class="h-4 w-px bg-base-content/10"></div>
+                    <span class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">System
+                        Updates</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-primary-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4v-4" />
+                            <path d="M11 20l4 0" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-black text-base-content tracking-tight">Announcements</h1>
+                        <p class="text-sm font-medium text-base-content/60 mt-0.5">Stay updated with the latest news and
+                            announcements.</p>
+                    </div>
+                </div>
+            </div>
+
             @if(auth()->user()->isAdmin())
-                <a href="{{ route('announcements.create') }}"
-                    class="btn btn-primary btn-sm gap-2 font-bold shadow-lg shadow-primary/20">
-                    <span class="icon-[tabler--plus] size-5"></span>
-                    New Announcement
-                </a>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('announcements.create') }}"
+                        class="btn btn-primary h-12 px-6 gap-3 font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/25 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                            class="shrink-0">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        New Announcement
+                    </a>
+                </div>
             @endif
         </div>
     </x-slot>
@@ -78,9 +108,20 @@
                                     {{ $announcement->title }}
                                 </h3>
                                 <div
-                                    class="prose prose-sm max-w-none text-base-content/70 font-medium line-clamp-3 leading-relaxed">
+                                    class="prose prose-sm max-w-none text-base-content/70 font-medium line-clamp-3 leading-relaxed mb-4">
                                     <p class="whitespace-pre-wrap">{{ $announcement->content }}</p>
                                 </div>
+                                <button type="button" data-overlay="#announcement-modal-{{ $announcement->id }}"
+                                    class="text-[10px] font-black text-primary uppercase tracking-[0.2em] hover:text-primary-focus transition-all flex items-center gap-1.5 group">
+                                    Read More
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                        <path d="M5 12l14 0" />
+                                        <path d="M13 18l6 -6" />
+                                        <path d="M13 6l6 6" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <!-- Footer: Author & Actions -->
@@ -160,8 +201,12 @@
                             notifications from the administration.</p>
                         @if(auth()->user()->isAdmin())
                             <a href="{{ route('announcements.create') }}"
-                                class="btn btn-primary gap-2 shadow-lg shadow-primary/20">
-                                <span class="icon-[tabler--plus] size-4"></span>
+                                class="btn btn-primary gap-2 shadow-lg shadow-primary/20 font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                    class="shrink-0">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
                                 Create First Announcement
                             </a>
                         @endif
@@ -169,5 +214,6 @@
                 </div>
             @endforelse
         </div>
+        @include('announcements.partials.show-modal')
     </div>
 </x-app-layout>

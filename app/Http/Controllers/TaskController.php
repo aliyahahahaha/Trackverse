@@ -45,7 +45,7 @@ class TaskController extends Controller
     public function create(Project $project)
     {
         Gate::authorize('view', $project);
-        $users = User::all(); // In a real app, maybe filter by project members
+        $users = $project->members;
         return view('tasks.create', compact('project', 'users'));
     }
 
@@ -85,7 +85,7 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         Gate::authorize('view', $task->project);
-        $users = User::all();
+        $users = $task->project->members;
         return view('tasks.edit', compact('task', 'users'));
     }
 

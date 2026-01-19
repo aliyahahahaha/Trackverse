@@ -10,11 +10,12 @@ use Illuminate\Notifications\Notifiable;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, InteractsWithMedia;
+    use HasFactory, Notifiable, InteractsWithMedia, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +28,15 @@ class User extends Authenticatable implements HasMedia
         'password',
         'role',
         'profile_photo_path',
+    ];
+
+    /**
+     * The attributes that should be appended to the user array.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     const ROLE_ADMIN = 'admin';

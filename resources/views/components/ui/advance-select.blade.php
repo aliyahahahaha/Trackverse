@@ -15,7 +15,7 @@
     $config = [
         'placeholder' => $placeholder,
         'toggleTag' => '<button type="button" aria-expanded="false"></button>',
-        'dropdownClasses' => 'advance-select-menu max-h-64 mt-2 p-2 bg-base-100 border border-base-content/10 shadow-2xl rounded-2xl overflow-y-auto z-[999]',
+        'dropdownClasses' => 'advance-select-menu max-h-96 mt-2 p-2 bg-base-100 border border-base-content/10 shadow-2xl rounded-2xl overflow-y-auto z-[999]',
         'optionClasses' => 'advance-select-option hover:bg-primary/10 py-1.5 px-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] selected:select-active mb-1',
         'optionTemplate' => '<div class="flex items-center gap-3"> <div class="w-7 h-7 rounded-lg shadow-sm border border-base-content/5 overflow-hidden shrink-0 flex items-center justify-center bg-base-200/50" data-icon></div> <div class="flex flex-col overflow-hidden gap-0.5"> <span class="text-xs font-bold text-base-content truncate leading-none" data-title></span> <span class="text-[9px] text-base-content/40 font-medium truncate leading-none uppercase tracking-tight" data-description></span> </div> </div>',
         'extraMarkup' => '<svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" class="text-base-content/30 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:rotate-180 transition-transform flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6 -6" /></svg>'

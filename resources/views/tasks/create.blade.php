@@ -40,7 +40,7 @@
             <input type="hidden" name="status" value="pending">
 
             <div
-                class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-[2rem] overflow-hidden">
+                class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-[2rem]">
                 <!-- Card Header -->
                 <div class="px-8 py-6 border-b border-base-content/5 bg-base-100 flex items-center gap-4">
                     <div
@@ -98,11 +98,11 @@
                         <!-- Assignee -->
                         <div class="form-control w-full">
                             <x-ui.advance-select name="assigned_to" label="ASSIGN TO" placeholder="Draft Assignment"
-                                :multiple="false" :options="$project->members->map(fn($m) => [
-        'value' => $m->id,
-        'label' => $m->name,
-        'description' => $m->email,
-        'image' => $m->profile_photo_url
+                                :multiple="false" :options="$users->map(fn($u) => [
+        'value' => $u->id,
+        'label' => $u->name,
+        'description' => $u->email,
+        'image' => $u->profile_photo_url
     ])->toArray()" />
                         </div>
                     </div>
