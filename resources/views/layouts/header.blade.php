@@ -50,6 +50,86 @@
                     </ul>
                 </div>
 
+                <!-- Notification Dropdown -->
+                <div class="dropdown dropdown-end relative inline-flex [--offset:12] z-50">
+                    <button type="button" class="btn btn-ghost btn-circle btn-sm hover:bg-base-content/10 transition-colors relative" aria-haspopup="menu" aria-expanded="false" aria-label="Notifications">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+                            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                        </svg>
+                        @if(auth()->user()->unreadNotifications->count() > 0)
+                            <span class="badge badge-xs badge-error absolute top-0.5 right-0.5 size-2 p-0 border border-base-100"></span>
+                        @endif
+                    </button>
+                    
+                    <div class="dropdown-menu dropdown-open:opacity-100 min-w-80 hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-base-content/5 rounded-2xl overflow-hidden bg-base-100 pb-2" role="menu">
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-base-content/5 bg-base-200/50">
+                            <h6 class="text-sm font-bold text-base-content">Notifications</h6>
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <form action="{{ route('notifications.markAllAsRead') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="text-[10px] font-bold uppercase tracking-wider text-primary hover:text-primary-focus transition-colors">Mark all read</button>
+                                </form>
+                            @endif
+                        </div>
+
+                        <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
+                            @forelse(auth()->user()->unreadNotifications as $notification)
+                                <a href="{{ $notification->data['action_url'] ?? '#' }}" onclick="markAsRead('{{ $notification->id }}')" class="flex gap-3 px-4 py-3 hover:bg-base-content/5 transition-colors border-b border-base-content/5 last:border-0 group">
+                                    <div class="mt-1">
+                                        @if(($notification->data['type'] ?? '') == 'task_assigned')
+                                             <div class="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                                             </div>
+                                        @elseif(($notification->data['type'] ?? '') == 'project_assigned')
+                                             <div class="size-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l18 0" /><path d="M9 8l1 0" /><path d="M9 12l1 0" /><path d="M9 16l1 0" /><path d="M14 8l1 0" /><path d="M14 12l1 0" /><path d="M14 16l1 0" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" /></svg>
+                                             </div>
+                                        @elseif(($notification->data['type'] ?? '') == 'ticket_assigned')
+                                             <div class="size-8 rounded-full bg-warning/10 flex items-center justify-center text-warning">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l0 2" /><path d="M15 11l0 2" /><path d="M15 17l0 2" /><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" /></svg>
+                                             </div>
+                                        @elseif(($notification->data['type'] ?? '') == 'task_deadline')
+                                             <div class="size-8 rounded-full bg-error/10 flex items-center justify-center text-error">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5l3 3" /></svg>
+                                             </div>
+                                        @else
+                                             <div class="size-8 rounded-full bg-base-content/10 flex items-center justify-center text-base-content/70">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                                             </div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-base-content group-hover:text-primary transition-colors">{{ $notification->data['title'] ?? 'Notification' }}</p>
+                                        <p class="text-[11px] text-base-content/60 mt-0.5 line-clamp-2">{{ $notification->data['message'] ?? '' }}</p>
+                                        <p class="text-[10px] text-base-content/40 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="px-4 py-8 text-center">
+                                    <div class="size-12 rounded-full bg-base-content/5 flex items-center justify-center mx-auto mb-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-6 text-base-content/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                                    </div>
+                                    <p class="text-xs font-medium text-base-content/50">No new notifications</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function markAsRead(id) {
+                        fetch(`/notifications/${id}/read`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Content-Type': 'application/json'
+                            },
+                             keepalive: true
+                        });
+                    }
+                </script>
+
                 <!-- Profile Dropdown -->
                 <div class="dropdown dropdown-end relative inline-flex [--offset:12]">
                     <button id="profile-dropdown" type="button" class="dropdown-toggle avatar p-0.5 rounded-xl transition-all hover:bg-base-content/5" aria-haspopup="menu"

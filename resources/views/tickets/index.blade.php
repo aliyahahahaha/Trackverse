@@ -193,7 +193,7 @@
                                     <div class="flex items-center justify-end gap-2">
                                         <!-- View Button -->
                                         <a href="{{ route('tickets.show', $ticket) }}"
-                                            class="btn btn-square btn-sm btn-ghost hover:bg-primary/10 hover:text-primary rounded-lg transition-all"
+                                            class="btn btn-square btn-sm btn-ghost text-base-content/70 hover:bg-primary/10 hover:text-primary rounded-lg transition-all"
                                             title="View Details">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -206,7 +206,7 @@
 
                                         <!-- Edit Button -->
                                         <a href="{{ route('tickets.edit', $ticket) }}"
-                                            class="btn btn-square btn-sm btn-ghost hover:bg-warning/10 hover:text-warning rounded-lg transition-all"
+                                            class="btn btn-square btn-sm btn-ghost text-base-content/70 hover:bg-warning/10 hover:text-warning rounded-lg transition-all"
                                             title="Edit Ticket">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -223,7 +223,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="btn btn-square btn-sm btn-ghost hover:bg-error/10 hover:text-error rounded-lg transition-all"
+                                                class="btn btn-square btn-sm btn-ghost text-base-content/70 hover:bg-error/10 hover:text-error rounded-lg transition-all"
                                                 title="Delete Ticket">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2"

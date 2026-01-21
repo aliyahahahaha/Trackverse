@@ -131,7 +131,7 @@
                                         <div class="flex items-center justify-end gap-2">
                                             <!-- View Button -->
                                             <a href="{{ route('users.show', $user) }}"
-                                                class="btn btn-square btn-sm size-8 bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all rounded-lg"
+                                                class="btn btn-square btn-sm size-8 bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all rounded-lg"
                                                 title="View Profile">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
                                                     <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
@@ -142,7 +142,7 @@
                                             <!-- Edit Button -->
                                             @if(auth()->user()->isAdmin() || auth()->id() === $user->id)
                                                 <a href="{{ route('users.edit', $user) }}"
-                                                    class="btn btn-square btn-sm size-8 bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
+                                                    class="btn btn-square btn-sm size-8 bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
                                                     title="Edit Profile">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
                                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
@@ -159,7 +159,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="btn btn-square btn-sm size-8 bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
+                                                        class="btn btn-square btn-sm size-8 bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
                                                         title="Delete User">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
                                                             <path d="M4 7l16 0" />

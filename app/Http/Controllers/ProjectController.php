@@ -46,6 +46,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Project::class);
         $users = \App\Models\User::orderBy('name')->get();
         return view('projects.create', compact('users'));
     }
@@ -55,6 +56,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Project::class);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',

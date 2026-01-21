@@ -142,7 +142,7 @@
                                     <div class="flex items-center gap-2">
                                         <!-- Edit Button -->
                                         <a href="{{ route('announcements.edit', $announcement) }}"
-                                            class="btn btn-square btn-sm size-8 bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
+                                            class="btn btn-square btn-sm size-8 bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
                                             title="Edit">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -158,7 +158,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="btn btn-square btn-sm size-8 bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
+                                                class="btn btn-square btn-sm size-8 bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
                                                 title="Delete">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

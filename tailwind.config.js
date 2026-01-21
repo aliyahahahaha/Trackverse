@@ -31,6 +31,10 @@ export default {
                     accent: '#37cdbe',
                     neutral: '#3d4451',
                     'base-100': '#ffffff',
+                    info: '#0ca5e9',    /* sky-500 */
+                    success: '#10b981', /* emerald-500 */
+                    warning: '#f59e0b', /* amber-500 */
+                    error: '#ef4444',   /* red-500 */
                 },
             },
             {

@@ -89,7 +89,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendar', [\App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/events', [\App\Http\Controllers\CalendarController::class, 'events'])->name('calendar.events');
 
+    // Leaderboard route
+    Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'index'])->name('leaderboard.index');
+
     Route::resource('announcements', \App\Http\Controllers\AnnouncementController::class);
+    // Notifications
+    Route::post('/notifications/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/read-all', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
     Route::resource('permissions', \App\Http\Controllers\PermissionsController::class)->only(['index', 'create', 'store', 'update']);
 });
 

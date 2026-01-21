@@ -67,6 +67,10 @@ class TaskController extends Controller
         $task->project_id = $project->id;
         $task->save();
 
+        if ($task->assigned_to && $task->assigned_to != auth()->id()) {
+            User::find($task->assigned_to)?->notify(new \App\Notifications\TaskAssigned($task));
+        }
+
         return redirect()->route('projects.show', $project)->with('success', 'Task created successfully.');
     }
 
@@ -103,7 +107,12 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
+        $originalAssignee = $task->assigned_to;
         $task->update($validated);
+
+        if ($task->assigned_to && $task->assigned_to != $originalAssignee && $task->assigned_to != auth()->id()) {
+            User::find($task->assigned_to)?->notify(new \App\Notifications\TaskAssigned($task));
+        }
 
         return redirect()->route('projects.show', $task->project)->with('success', 'Task updated successfully.');
     }
