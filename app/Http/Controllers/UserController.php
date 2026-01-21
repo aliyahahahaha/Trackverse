@@ -13,6 +13,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access.');
+        }
         $users = User::with('todayAvailability')->paginate(10);
 
         return view('users.index', compact('users'));
@@ -23,6 +26,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access.');
+        }
         return view('users.create');
     }
 
@@ -31,6 +37,9 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access.');
+        }
         $validated = $request->validated();
 
         $user = new User();
@@ -53,6 +62,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if (!auth()->user()->isAdmin() && auth()->id() !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
         return view('users.edit', compact('user'));
     }
 
@@ -61,6 +73,9 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        if (!auth()->user()->isAdmin() && auth()->id() !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
         \Illuminate\Support\Facades\Log::info('User Update Start', [
             'target_user' => $user->id,
             'auth_user' => auth()->id(),
@@ -106,6 +121,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access.');
+        }
         if (auth()->id() === $user->id) {
             return redirect()->route('users.index')->with('error', 'You cannot delete your own account.');
         }

@@ -13,19 +13,19 @@
             </svg>
         </button>
 
-        <!-- Branding Section -->
-        <div class="px-5 py-4 flex-shrink-0 border-b border-base-content/5">
-            <div class="flex items-center gap-3">
+        <!-- Branding Section - Enlarged -->
+        <div class="px-6 py-6 flex-shrink-0 border-b border-base-content/5">
+            <div class="flex items-center gap-4">
                 <div
-                    class="size-8 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/10 shadow-sm transition-transform hover:scale-105 duration-300">
-                    <img src="{{ asset('trackverse.png') }}" alt="Logo" class="size-4.5 object-contain">
+                    class="size-11 bg-primary/10 rounded-[14px] flex items-center justify-center border border-primary/10 shadow-sm transition-transform hover:scale-105 duration-300">
+                    <img src="{{ asset('trackverse.png') }}" alt="Logo" class="size-7 object-contain">
                 </div>
                 <div class="flex flex-col">
                     <h2
-                        class="text-base-content text-sm font-black tracking-tighter uppercase italic leading-none group cursor-default">
+                        class="text-base-content text-xl font-black tracking-tighter uppercase italic leading-none group cursor-default">
                         Track<span class="text-primary italic animate-pulse">Verse</span>
                     </h2>
-                    <span class="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400 mt-0.5">Management
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Management
                         Hub</span>
                 </div>
             </div>
@@ -78,6 +78,29 @@
                         </div>
                         <span class="ml-2 text-[10px] uppercase tracking-wider">Calendar</span>
                         @if(request()->routeIs('calendar.*'))
+                            <div class="absolute right-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
+                        @endif
+                    </a>
+                </li>
+
+                <!-- Leaderboard -->
+                <li>
+                    <a href="{{ route('leaderboard.index') }}" @class([
+                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('leaderboard.*'),
+                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('leaderboard.*')
+                    ])>
+                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('leaderboard.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('leaderboard.*')])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9h6v6h-6z" />
+                                <path d="M18 9h-3v6h3z" />
+                                <path d="M12 3l-9 4.5v3l9 4.5l9 -4.5v-3z" />
+                                <path d="M12 15v6" />
+                            </svg>
+                        </div>
+                        <span class="ml-2 text-[10px] uppercase tracking-wider">Leaderboard</span>
+                        @if(request()->routeIs('leaderboard.*'))
                             <div class="absolute right-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
                         @endif
                     </a>
@@ -191,25 +214,27 @@
                     </a>
                 </li>
 
-                <!-- Team Members -->
-                <li>
-                    <a href="{{ route('users.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('users.index') && !auth()->user()->isAdmin(),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !(request()->routeIs('users.index') && !auth()->user()->isAdmin())
-                    ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('users.index') && !auth()->user()->isAdmin(), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('users.index') && !auth()->user()->isAdmin()])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                            </svg>
-                        </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Team Members</span>
-                    </a>
-                </li>
+                @if(auth()->user()->isAdmin())
+                    <!-- Team Members -->
+                    <li>
+                        <a href="{{ route('users.index') }}" @class([
+                            'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
+                            'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('users.index'),
+                            'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('users.index')
+                        ])>
+                            <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('users.index'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('users.index')])>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                                </svg>
+                            </div>
+                            <span class="ml-2 text-[10px] uppercase tracking-wider">Team Members</span>
+                        </a>
+                    </li>
+                @endif
 
                 <!-- Administration -->
                 @if(auth()->user()->isAdmin())
@@ -263,24 +288,20 @@
         <div class="p-2 border-t border-base-content/5 bg-base-100/50">
             <div
                 class="flex items-center gap-2 p-1.5 rounded-lg bg-base-100 border border-base-content/5 shadow-sm group transition-all duration-300 hover:shadow-md hover:border-primary/10">
-                <div class="relative">
-                    <div
-                        class="size-7 rounded-md overflow-hidden border-2 border-primary/10 transition-transform group-hover:scale-105 duration-300">
-                        <img src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}"
-                            class="object-cover w-full h-full" />
-                    </div>
-                    <div
-                        class="absolute -bottom-0.5 -right-0.5 size-2 bg-success border-2 border-white rounded-full shadow-sm animate-pulse">
-                    </div>
+                <div class="relative inline-block">
+                    <img class="size-9 rounded-lg object-cover border border-base-content/10"
+                        src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}" />
+                    <span
+                        class="absolute bottom-0 right-0 block size-2.5 rounded-full bg-success ring-2 ring-white transform translate-x-1/4 translate-y-1/4"></span>
                 </div>
-                <div class="flex flex-col min-w-0 grow">
+                <div class="flex flex-col min-w-0 grow gap-0.5">
                     <h6
-                        class="text-[9px] font-black text-base-content truncate uppercase tracking-wider group-hover:text-primary transition-colors">
+                        class="text-xs font-bold text-base-content/90 truncate group-hover:text-primary transition-colors leading-tight">
                         {{ auth()->user()->name }}
                     </h6>
-                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest truncate">
+                    <span class="text-[10px] font-semibold text-base-content/50 uppercase tracking-wider truncate">
                         {{ auth()->user()->role ?? 'User' }}
-                    </p>
+                    </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
                     @csrf

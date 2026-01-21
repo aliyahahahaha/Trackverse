@@ -52,7 +52,7 @@
                     @can('update', $task)
                         <!-- Edit Button -->
                         <a href="{{ route('tasks.edit', $task) }}"
-                            class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 shadow-sm transition-all"
+                            class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content/70 border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 shadow-sm transition-all"
                             title="Edit Task">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -70,7 +70,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 shadow-sm transition-all"
+                                class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content/70 border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 shadow-sm transition-all"
                                 title="Delete Task">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

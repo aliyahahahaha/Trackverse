@@ -40,6 +40,8 @@ class ProjectMemberController extends Controller
 
         $project->members()->attach($validated['user_id']);
 
+        User::find($validated['user_id'])?->notify(new \App\Notifications\ProjectAssigned($project));
+
         return back()->with('success', 'Member added successfully.');
     }
 

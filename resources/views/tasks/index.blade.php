@@ -60,10 +60,10 @@
                                         </td>
                                         <td class="py-3 px-4 text-center">
                                             <span class="badge badge-sm font-bold uppercase tracking-wider
-                                                            {{ $task->status === 'completed' ? 'badge-success text-success-content' : '' }}
-                                                            {{ $task->status === 'in_progress' ? 'badge-info text-info-content' : '' }}
-                                                            {{ $task->status === 'pending' ? 'badge-warning text-warning-content' : '' }}
-                                                         ">
+                                                                {{ $task->status === 'completed' ? 'badge-success text-success-content' : '' }}
+                                                                {{ $task->status === 'in_progress' ? 'badge-info text-info-content' : '' }}
+                                                                {{ $task->status === 'pending' ? 'badge-warning text-warning-content' : '' }}
+                                                             ">
                                                 {{ str_replace('_', ' ', $task->status) }}
                                             </span>
                                         </td>
@@ -94,7 +94,7 @@
                                             <div class="flex items-center justify-end gap-2 isolate">
                                                 <!-- Edit -->
                                                 <a href="{{ route('tasks.edit', $task) }}"
-                                                    class="btn btn-square btn-sm bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
+                                                    class="btn btn-square btn-sm bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 transition-all rounded-lg"
                                                     title="Edit Task">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -111,7 +111,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="btn btn-square btn-sm bg-base-100 text-base-content shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
+                                                        class="btn btn-square btn-sm bg-base-100 text-base-content/70 shadow-sm border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 transition-all rounded-lg"
                                                         title="Delete Task">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"

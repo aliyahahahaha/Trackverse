@@ -33,27 +33,27 @@
         {{-- KPI Cards --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Tickets Assigned --}}
-            <div class="card bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-xl rounded-2xl p-5">
-                <div class="text-4xl font-black mb-1">{{ $ticketsAssigned }}</div>
-                <div class="text-xs font-bold uppercase tracking-wider opacity-90">Tickets Assigned</div>
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #f59e0b, #f97316); color: #0f172a;">
+                <div class="text-4xl font-black mb-1" style="color: #0f172a;">{{ $ticketsAssigned }}</div>
+                <div class="text-xs font-black uppercase tracking-wider opacity-60">Tickets Assigned</div>
             </div>
 
             {{-- Tickets Created --}}
-            <div class="card bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl rounded-2xl p-5">
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff;">
                 <div class="text-4xl font-black mb-1">{{ $ticketsCreated }}</div>
-                <div class="text-xs font-bold uppercase tracking-wider opacity-90">Tickets Created</div>
+                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tickets Created</div>
             </div>
 
             {{-- Tasks Assigned --}}
-            <div class="card bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-xl rounded-2xl p-5">
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #ffffff;">
                 <div class="text-4xl font-black mb-1">{{ $trackersAssigned }}</div>
-                <div class="text-xs font-bold uppercase tracking-wider opacity-90">Tasks Assigned</div>
+                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tasks Assigned</div>
             </div>
 
             {{-- Tasks Created --}}
-            <div class="card bg-gradient-to-br from-pink-500 to-pink-600 text-white shadow-xl rounded-2xl p-5">
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff;">
                 <div class="text-4xl font-black mb-1">{{ $trackersCreated }}</div>
-                <div class="text-xs font-bold uppercase tracking-wider opacity-90">Tasks Created</div>
+                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tasks Created</div>
             </div>
         </div>
 
@@ -65,20 +65,23 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="size-5 rounded bg-amber-400"></div>
-                    <span class="text-base font-semibold text-slate-700">Ticket - Assigned (Open)</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #f59e0b !important;"></div>
+                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Ticket - Assigned
+                        (Open)</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-5 rounded bg-blue-500"></div>
-                    <span class="text-base font-semibold text-slate-700">Ticket - Created by Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #0ea5e9 !important;"></div>
+                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Ticket - Created by
+                        Me</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-5 rounded bg-purple-500"></div>
-                    <span class="text-base font-semibold text-slate-700">Task - Assigned to Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #8b5cf6 !important;"></div>
+                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Task - Assigned to
+                        Me</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-5 rounded bg-pink-500"></div>
-                    <span class="text-base font-semibold text-slate-700">Task - Created by Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #ec4899 !important;"></div>
+                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Task - Created by Me</span>
                 </div>
             </div>
         </div>
@@ -150,69 +153,69 @@
                 // Custom styling for FullCalendar
                 const style = document.createElement('style');
                 style.textContent = `
-                        .fc {
-                            font-family: inherit;
-                        }
-                        .fc .fc-toolbar-title {
-                            font-size: 1.5rem;
-                            font-weight: 900;
-                            color: #1e293b;
-                        }
-                        .fc .fc-button {
-                            background-color: #6366f1;
-                            border: none;
-                            border-radius: 0.5rem;
-                            padding: 0.5rem 1rem;
-                            font-weight: 700;
-                            text-transform: uppercase;
-                            font-size: 0.75rem;
-                            letter-spacing: 0.05em;
-                            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
-                        }
-                        .fc .fc-button:hover {
-                            background-color: #4f46e5;
-                        }
-                        .fc .fc-button-active {
-                            background-color: #4338ca !important;
-                        }
-                        .fc .fc-button:disabled {
-                            opacity: 0.5;
-                        }
-                        .fc-theme-standard td, .fc-theme-standard th {
-                            border-color: #e2e8f0;
-                        }
-                        .fc .fc-daygrid-day-number {
-                            font-weight: 700;
-                            color: #475569;
-                            padding: 0.5rem;
-                        }
-                        .fc .fc-col-header-cell {
-                            background-color: #f8fafc;
-                            font-weight: 800;
-                            text-transform: uppercase;
-                            font-size: 0.75rem;
-                            letter-spacing: 0.05em;
-                            color: #64748b;
-                            padding: 1rem 0.5rem;
-                        }
-                        .fc .fc-daygrid-day.fc-day-today {
-                            background-color: #eef2ff !important;
-                        }
-                        .fc .fc-event {
-                            border: none;
-                            margin-bottom: 2px;
-                        }
-                        .fc .fc-event-title {
-                            font-weight: 700;
-                        }
-                        .fc .fc-more-link {
-                            font-weight: 700;
-                            color: #6366f1;
-                        }
-                        .fc .fc-list-event:hover td {
-                            background-color: #f8fafc;
-                        }
-                    `;
+                                .fc {
+                                    font-family: inherit;
+                                }
+                                .fc .fc-toolbar-title {
+                                    font-size: 1.5rem;
+                                    font-weight: 900;
+                                    color: #1e293b;
+                                }
+                                .fc .fc-button {
+                                    background-color: #6366f1;
+                                    border: none;
+                                    border-radius: 0.5rem;
+                                    padding: 0.5rem 1rem;
+                                    font-weight: 700;
+                                    text-transform: uppercase;
+                                    font-size: 0.75rem;
+                                    letter-spacing: 0.05em;
+                                    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+                                }
+                                .fc .fc-button:hover {
+                                    background-color: #4f46e5;
+                                }
+                                .fc .fc-button-active {
+                                    background-color: #4338ca !important;
+                                }
+                                .fc .fc-button:disabled {
+                                    opacity: 0.5;
+                                }
+                                .fc-theme-standard td, .fc-theme-standard th {
+                                    border-color: #e2e8f0;
+                                }
+                                .fc .fc-daygrid-day-number {
+                                    font-weight: 700;
+                                    color: #475569;
+                                    padding: 0.5rem;
+                                }
+                                .fc .fc-col-header-cell {
+                                    background-color: #f8fafc;
+                                    font-weight: 800;
+                                    text-transform: uppercase;
+                                    font-size: 0.75rem;
+                                    letter-spacing: 0.05em;
+                                    color: #64748b;
+                                    padding: 1rem 0.5rem;
+                                }
+                                .fc .fc-daygrid-day.fc-day-today {
+                                    background-color: #eef2ff !important;
+                                }
+                                .fc .fc-event {
+                                    border: none;
+                                    margin-bottom: 2px;
+                                }
+                                .fc .fc-event-title {
+                                    font-weight: 700;
+                                }
+                                .fc .fc-more-link {
+                                    font-weight: 700;
+                                    color: #6366f1;
+                                }
+                                .fc .fc-list-event:hover td {
+                                    background-color: #f8fafc;
+                                }
+                            `;
                 document.head.appendChild(style);
             });
         </script>

@@ -102,19 +102,23 @@ class TicketController extends Controller
             $ticket->addMediaFromRequest('attachment')->toMediaCollection('attachments');
         }
 
+        if ($ticket->assigned_to && $ticket->assigned_to != auth()->id()) {
+            \App\Models\User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
+        }
+
         return redirect()->route('tickets.index')->with('success', 'Ticket created successfully.');
     }
 
     public function show(Ticket $ticket)
     {
-        $this->authorizeTicketAccess($ticket);
+        $this->authorizeTicketAccess($ticket, 'view');
         $ticket->load(['responses.user', 'user', 'project', 'assignedTo']);
         return view('tickets.show', compact('ticket'));
     }
 
     public function edit(Ticket $ticket)
     {
-        $this->authorizeTicketAccess($ticket);
+        $this->authorizeTicketAccess($ticket, 'edit');
 
         $user = auth()->user();
         if ($user->isAdmin()) {
@@ -136,7 +140,7 @@ class TicketController extends Controller
 
     public function update(Request $request, Ticket $ticket)
     {
-        $this->authorizeTicketAccess($ticket);
+        $this->authorizeTicketAccess($ticket, 'update');
         $user = auth()->user();
 
         $validated = $request->validate([
@@ -153,6 +157,8 @@ class TicketController extends Controller
             $ticket->addMediaFromRequest('attachment')->toMediaCollection('attachments');
         }
 
+        $originalAssignee = $ticket->assigned_to;
+
         $ticket->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -162,12 +168,16 @@ class TicketController extends Controller
             'assigned_to' => $validated['assigned_to'],
         ]);
 
+        if ($ticket->assigned_to && $ticket->assigned_to != $originalAssignee && $ticket->assigned_to != auth()->id()) {
+            \App\Models\User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
+        }
+
         return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully.');
     }
 
     public function close(Ticket $ticket)
     {
-        $this->authorizeTicketAccess($ticket);
+        $this->authorizeTicketAccess($ticket, 'close');
 
         $ticket->update(['status' => 'closed']);
 
@@ -176,7 +186,7 @@ class TicketController extends Controller
 
     public function destroy(Ticket $ticket)
     {
-        $this->authorizeTicketAccess($ticket);
+        $this->authorizeTicketAccess($ticket, 'delete');
         if ($ticket->attachment_path) {
             Storage::disk('public')->delete($ticket->attachment_path);
         }
@@ -184,15 +194,22 @@ class TicketController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully.');
     }
 
-    private function authorizeTicketAccess(Ticket $ticket)
+    private function authorizeTicketAccess(Ticket $ticket, $action = 'view')
     {
         $user = auth()->user();
         if ($user->isAdmin())
             return;
 
-        // Check if user is member of the project
+        // Check if user is member of the project (required for all actions)
         if (!$ticket->project->members->contains($user->id) && $ticket->project->created_by !== $user->id) {
-            abort(403);
+            abort(403, 'Unauthorized access to this project\'s tickets.');
+        }
+
+        // For modifying actions, check if user is the reporter
+        if (in_array($action, ['edit', 'delete', 'update', 'close'])) {
+            if ($ticket->user_id !== $user->id) {
+                abort(403, 'You can only modify tickets that you reported.');
+            }
         }
     }
 }
