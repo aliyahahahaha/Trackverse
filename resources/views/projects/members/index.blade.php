@@ -1,81 +1,93 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="space-y-6 pb-2">
-            <!-- Back Button & Breadcrumb Row (FIXED) -->
-            <div class="flex items-center gap-4">
-                <a href="{{ route('projects.show', $project) }}" 
-                   class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                    <span class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">← BACK TO PROJECT</span>
-                </a>
-
-                <div class="h-4 w-px bg-base-content/20"></div>
-
-                <!-- Breadcrumb -->
-                <nav class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-base-content/40">
-                    <ol class="flex items-center gap-2">
-                        <li><a href="{{ route('projects.index') }}" class="hover:text-primary transition-colors">Projects</a></li>
-                        <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" style="width: 10px; height: 10px;" class="opacity-30 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6l-6 6" /></svg></li>
-                        <li><a href="{{ route('projects.show', $project) }}" class="hover:text-primary transition-colors">{{ $project->name }}</a></li>
-                        <li class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" style="width: 10px; height: 10px;" class="opacity-30 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6l-6 6" /></svg></li>
-                        <li class="text-base-content/60">Members</li>
-                    </ol>
-                </nav>
+        <div class="flex flex-col gap-4">
+            <div class="flex">
+                <div class="hidden md:flex bg-base-100 rounded-full border border-base-content/5 p-1 shadow-sm">
+                    <a href="{{ route('projects.show', $project) }}" class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-xs tracking-wider transition-all">
+                        PROJECT VIEW
+                    </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <a href="#" class="px-6 py-2 rounded-full bg-secondary/10 text-secondary font-bold text-xs tracking-wider transition-all">
+                        TEAM MANAGEMENT
+                    </a>
+                </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <div class="size-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary shadow-sm border border-primary/5">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary shadow-sm border border-secondary/5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                            <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                            <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black text-base-content tracking-tight">Manage Team</h1>
+                        <p class="text-sm font-medium text-base-content/60 mt-0.5">Control access for {{ $project->name }}.</p>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-black text-base-content tracking-tight">Manage Team</h2>
+
+                <div class="hidden sm:flex items-center gap-3 ml-auto">
+                    <div class="px-4 py-2 bg-base-100 rounded-xl border border-base-content/5 shadow-sm text-xs font-bold text-base-content/70">
+                        {{ $members->count() }} Members
+                    </div>
+                </div>
             </div>
         </div>
     </x-slot>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Add Member Form -->
-        <div class="lg:col-span-1">
-            <div class="card bg-base-100 border border-base-content/5 shadow-xl shadow-base-content/[0.02] rounded-3xl sticky top-6">
-                <div class="card-body p-6">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-6">
-                        Add Member
-                    </h3>
+        @can('update', $project)
+            <!-- Add Member Form -->
+            <div class="lg:col-span-1">
+                <div class="card bg-base-100 border border-base-content/5 shadow-xl shadow-base-content/[0.02] rounded-3xl sticky top-6">
+                    <div class="card-body p-6">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-6">
+                            Add Member
+                        </h3>
 
-                    <form action="{{ route('projects.members.store', $project) }}" method="POST">
-                        @csrf
+                        <form action="{{ route('projects.members.store', $project) }}" method="POST">
+                            @csrf
 
-                        <div class="form-control mb-6">
-                            <x-ui.advance-select 
-                                name="user_id" 
-                                label="Member" 
-                                placeholder="Search user to add..."
-                                :multiple="false"
-                                :options="$users->map(fn($u) => [
-                                    'value' => $u->id, 
-                                    'label' => $u->name, 
-                                    'description' => $u->email, 
-                                    'image' => $u->profile_photo_url
-                                ])->toArray()"
-                            />
-                        </div>
+                            <div class="form-control mb-6">
+                                <x-ui.advance-select 
+                                    name="user_id" 
+                                    label="Member" 
+                                    placeholder="Search user to add..."
+                                    :multiple="false"
+                                    :options="$users->map(fn($u) => [
+                                        'value' => $u->id, 
+                                        'label' => $u->name, 
+                                        'description' => $u->email, 
+                                        'image' => $u->profile_photo_url
+                                    ])->toArray()"
+                                />
+                            </div>
 
-                        <button type="submit" class="btn btn-primary h-11 w-full rounded-xl font-black uppercase tracking-widest text-[9px] shadow-lg shadow-primary/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 14px; height: 14px;" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                            Confirm Access
-                        </button>
-                    </form>
+                            <button type="submit" class="btn btn-primary h-11 w-full rounded-xl font-bold uppercase tracking-widest text-[9px] shadow-lg shadow-primary/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 14px; height: 14px;" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                Confirm Access
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endcan
 
         <!-- Members List -->
-        <div class="lg:col-span-2">
+        <div class="@can('update', $project) lg:col-span-2 @else lg:col-span-3 @endcan">
             <div class="card bg-base-100 border border-base-content/5 shadow-xl shadow-base-content/[0.02] rounded-3xl">
                 <div class="card-body p-8">
                     <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-base-content/40 flex items-center gap-2">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-base-content/40 flex items-center gap-2">
                             Team
                         </h3>
-                        <span class="px-2.5 py-1 bg-base-200 text-base-content/40 rounded-lg text-[10px] font-black">{{ $members->count() }} TOTAL</span>
+                        <span class="px-2.5 py-1 bg-base-200 text-base-content/40 rounded-lg text-[10px] font-bold">{{ $members->count() }} TOTAL</span>
                     </div>
 
                     @if(session('success'))
@@ -96,7 +108,7 @@
                         <div class="overflow-x-auto">
                             <table class="table table-zebra">
                                 <thead>
-                                    <tr class="text-[9px] font-black uppercase tracking-widest text-base-content/30 border-b border-base-content/5">
+                                    <tr class="text-[9px] font-bold uppercase tracking-widest text-base-content/30 border-b border-base-content/5">
                                         <th class="py-4">Member</th>
                                         <th class="py-4 text-center">Status</th>
                                         <th class="py-4 text-right">Access</th>
@@ -115,7 +127,7 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <div class="text-[11px] font-black text-base-content leading-tight">{{ $member->name }}</div>
+                                                        <div class="text-[11px] font-bold text-base-content leading-tight">{{ $member->name }}</div>
                                                         <div class="text-[9px] text-base-content/30 font-bold uppercase tracking-widest leading-none">{{ $member->email }}</div>
                                                     </div>
                                                 </div>
@@ -123,27 +135,32 @@
 
                                             <td class="text-center">
                                                 @if($member->id === $project->created_by)
-                                                    <div class="badge badge-soft badge-primary badge-sm py-2 px-3 font-black uppercase text-[8px] border-none rounded-lg">
+                                                    <div class="badge badge-soft badge-primary badge-sm py-2 px-3 font-bold uppercase text-[8px] border-none rounded-lg">
                                                         Owner
                                                     </div>
                                                 @else
-                                                    <div class="badge badge-soft badge-neutral badge-sm py-2 px-3 font-black uppercase text-[8px] border-none rounded-lg">
+                                                    <div class="badge badge-soft badge-neutral badge-sm py-2 px-3 font-bold uppercase text-[8px] border-none rounded-lg">
                                                         Member
                                                     </div>
                                                 @endif
                                             </td>
                                             <td class="text-right">
                                                 @if($member->id !== $project->created_by)
-                                                    <form action="{{ route('projects.members.destroy', [$project, $member]) }}" method="POST" 
-                                                          onsubmit="return confirm('Revoke access for {{ $member->name }}?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" 
-                                                            class="btn btn-square btn-sm btn-ghost hover:bg-error/10 hover:text-error transition-all rounded-xl"
-                                                            title="Revoke Access">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                                        </button>
-                                                    </form>
+                                                    @can('update', $project)
+                                                        <form action="{{ route('projects.members.destroy', [$project, $member]) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" 
+                                                                class="btn btn-square btn-sm btn-ghost hover:bg-error/10 hover:text-error transition-all rounded-xl"
+                                                                data-confirm="Are you sure you want to revoke access for {{ $member->name }}? They will immediately lose access to this project."
+                                                                data-confirm-title="Revoke Access" data-confirm-text="Yes, Revoke"
+                                                                title="Revoke Access">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="text-[10px] font-bold uppercase text-base-content/20">Read Only</span>
+                                                    @endcan
                                                 @else
                                                     <div class="flex justify-end mr-4">
                                                         <svg xmlns="http://www.w3.org/2000/svg" style="width: 14px; height: 14px;" class="text-base-content/10 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

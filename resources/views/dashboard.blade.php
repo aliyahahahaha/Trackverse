@@ -1,20 +1,48 @@
 @extends('layouts.app')
 
-@section('content')
-    <!-- Dashboard Header -->
-    <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-base-content">
-                Welcome back, {{ auth()->user()->name }}!
-            </h1>
-            <p class="text-base-content/60 mt-1">
-                Here's what's happening with your projects today.
-            </p>
+@section('header')
+    <div class="flex flex-col gap-6">
+        <!-- Navigation Switcher (Premium Pill) -->
+        <div class="flex">
+            <div class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
+                <a href="{{ route('dashboard') }}" 
+                    class="px-6 py-2 rounded-full bg-primary/10 text-primary font-black text-[10px] tracking-[0.2em] transition-all">
+                    DASHBOARD
+                </a>
+                <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                <a href="#" 
+                    class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-black text-[10px] tracking-[0.2em] transition-all">
+                    ACTIVITY LOG
+                </a>
+            </div>
         </div>
-        <div class="text-end hidden sm:block">
-            <p class="text-sm font-medium text-base-content/50 uppercase tracking-widest">{{ now()->format('l, F j, Y') }}</p>
+
+        <!-- Main Header Content -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+                <div class="size-16 rounded-[1.5rem] bg-primary shadow-2xl shadow-primary/20 flex items-center justify-center text-primary-content shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 5a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                        <path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M8 15h2v2h-2z" />
+                    </svg>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">Welcome back, {{ auth()->user()->name }}!</h1>
+                    <p class="text-[13px] text-base-content/50 font-black flex items-center gap-2 uppercase tracking-wide">Here's what's happening with your projects today.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="px-5 py-3 bg-white rounded-2xl border border-base-content/5 shadow-sm">
+                    <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 block leading-none mb-1.5">Today's Date</span>
+                    <span class="text-sm font-black text-base-content leading-none">{{ now()->format('l, F j, Y') }}</span>
+                </div>
+            </div>
         </div>
     </div>
+@endsection
+
+@section('content')
 
     <!-- Announcements Slider Section -->
     @if($announcements->count() > 0)
@@ -231,13 +259,14 @@
             </script>
         @endpush
         @include('announcements.partials.show-modal')
+        @include('projects.partials.modal-fix')
     @endif
 
     <!-- Base Layout Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl">
-            <div class="card-body p-5 flex flex-row items-center gap-4">
-                <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <div class="card-body p-5 flex flex-row items-start gap-4">
+                <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /></svg>
                 </div>
                 <div>
@@ -247,8 +276,8 @@
             </div>
         </div>
         <div class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl">
-            <div class="card-body p-5 flex flex-row items-center gap-4">
-                <div class="size-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
+            <div class="card-body p-5 flex flex-row items-start gap-4">
+                <div class="size-12 rounded-xl bg-success/10 text-success flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2l4-4" /><circle cx="12" cy="12" r="9" /></svg>
                 </div>
                 <div>
@@ -258,8 +287,8 @@
             </div>
         </div>
         <div class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl">
-            <div class="card-body p-5 flex flex-row items-center gap-4">
-                <div class="size-12 rounded-xl bg-warning/10 text-warning flex items-center justify-center">
+            <div class="card-body p-5 flex flex-row items-start gap-4">
+                <div class="size-12 rounded-xl bg-warning/10 text-warning flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2" /><path d="M12 20v2" /><path d="M4.93 4.93l1.41 1.41" /><path d="M17.66 17.66l1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="M6.34 17.66l-1.41 1.41" /><path d="M19.07 4.93l-1.41 1.41" /></svg>
                 </div>
                 <div>
@@ -269,8 +298,8 @@
             </div>
         </div>
         <div class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl">
-            <div class="card-body p-5 flex flex-row items-center gap-4">
-                <div class="size-12 rounded-xl bg-error/10 text-error flex items-center justify-center">
+            <div class="card-body p-5 flex flex-row items-start gap-4">
+                <div class="size-12 rounded-xl bg-error/10 text-error flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
                 </div>
                 <div>
@@ -286,10 +315,10 @@
         <div class="lg:col-span-2 space-y-4">
             <div class="flex items-center justify-between px-1">
                 <div class="flex items-center gap-3">
-                    <div class="size-2 rounded-full bg-primary shadow-sm"></div>
-                    <h2 class="text-[10px] font-black uppercase tracking-widest text-base-content/40 italic">Recent Projects</h2>
+                    <div class="size-1.5 rounded-full bg-primary shadow-sm"></div>
+                    <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/40">Recent Projects</h2>
                 </div>
-                <a href="{{ route('projects.index') }}" class="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">All Projects</a>
+                <a href="{{ route('projects.index') }}" class="text-[10px] font-black text-primary uppercase tracking-[0.2em] hover:text-primary/70 transition-colors">View All</a>
             </div>
             <div class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl overflow-hidden">
                 <div class="card-body p-0">
@@ -313,7 +342,7 @@
                                         <td class="py-4 px-4 text-center">
                                             @include('projects.partials.status-badge', ['status' => $project->status])
                                         </td>
-                                        <td class="py-4 px-6 text-end text-xs font-medium text-base-content/40 italic">
+                                        <td class="py-4 px-6 text-end text-[10px] font-black uppercase tracking-widest text-base-content/40">
                                             {{ $project->created_at->diffForHumans() }}
                                         </td>
                                     </tr>
@@ -332,18 +361,18 @@
         <!-- Upcoming Tasks Sidebar -->
         <div class="space-y-4">
             <div class="flex items-center gap-3 px-1">
-                <div class="size-2 rounded-full bg-warning shadow-sm"></div>
-                <h2 class="text-[10px] font-black uppercase tracking-widest text-base-content/40 italic">Upcoming Tasks</h2>
+                <div class="size-1.5 rounded-full bg-warning shadow-sm"></div>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/40">Upcoming Tasks</h2>
             </div>
             <div class="space-y-3">
                 @forelse($upcomingTasks as $task)
                     <a href="{{ route('tasks.show', $task) }}" class="card bg-base-100 shadow-sm border border-base-content/5 rounded-2xl hover:translate-x-1 transition-all group">
-                        <div class="card-body p-4 flex flex-col gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[9px] font-black text-primary/60 uppercase tracking-widest truncate max-w-[120px]">{{ $task->project->name }}</span>
-                                <span class="badge badge-warning badge-outline badge-xs text-[8px] font-black px-1.5">{{ \Carbon\Carbon::parse($task->due_date)->format('M d') }}</span>
+                        <div class="card-body p-6 flex flex-col gap-2.5">
+                            <div class="flex items-center justify-between pb-1">
+                                <span class="text-[11px] font-black text-base-content/40 uppercase tracking-[0.2em] truncate max-w-[150px]">{{ $task->project->name }}</span>
+                                <span class="inline-flex items-center px-2.5 h-5 bg-warning/5 text-warning text-[9px] font-black border border-warning/10 rounded-lg tracking-widest">{{ \Carbon\Carbon::parse($task->due_date)->format('M d') }}</span>
                             </div>
-                            <h4 class="font-bold text-base-content tracking-tight leading-tight group-hover:text-primary transition-colors">{{ $task->title }}</h4>
+                            <h4 class="font-black text-[15px] text-base-content group-hover:text-primary transition-colors uppercase tracking-tight">{{ $task->title }}</h4>
                         </div>
                     </a>
                 @empty

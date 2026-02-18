@@ -1,0 +1,31 @@
+TRACKVERSE DEPLOYMENT CHECKLIST
+================================
+
+□ STEP 1: UPLOAD FILES
+  □ Upload entire public/build folder → public/build
+  □ Upload routes/web.php → routes/web.php
+
+□ STEP 2: DELETE FILES ON HOSTINGER
+  □ Delete public/hot (if exists)
+  □ Delete all files in storage/framework/views/
+
+□ STEP 3: UPDATE .ENV ON HOSTINGER
+  □ Set APP_ENV=production
+  □ Set APP_DEBUG=false
+  □ Set APP_URL=https://hotpink-moose-776723.hostingersite.com
+  □ Update DB_DATABASE, DB_USERNAME, DB_PASSWORD
+
+□ STEP 4: CLEAR CACHE
+  □ Visit: https://hotpink-moose-776723.hostingersite.com/clear-cache
+  □ See success message
+
+□ STEP 5: TEST
+  □ Login to dashboard
+  □ Click user profile dropdown - should close
+  □ Click Projects dropdown - should toggle
+  □ Check browser console (F12) - no errors about [::1]:5173
+
+□ STEP 6: CLEANUP (After it works)
+  □ Remove /clear-cache route from routes/web.php
+
+DONE! ✅

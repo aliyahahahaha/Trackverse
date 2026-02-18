@@ -1,33 +1,33 @@
 <x-app-layout>
-    <div class="min-h-screen w-full bg-gray-50 py-12 px-4 sm:px-6">
-
-        {{-- Header Navigation --}}
-        <div class="max-w-6xl mx-auto mb-10 space-y-5">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('announcements.index') }}"
-                    class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                    <span class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">←
-                        BACK
-                        TO ANNOUNCEMENTS</span>
-                </a>
-                <div class="h-5 w-px bg-base-content/10"></div>
-                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+    <x-slot name="header">
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
+                    <a href="{{ route('announcements.index') }}"
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        ANNOUNCEMENTS
+                    </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
                     <div
-                        class="w-4 h-4 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 5v14M5 12h14" />
-                        </svg>
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        EDIT MODE
                     </div>
-                    Live Editing Mode
                 </div>
             </div>
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Edit Announcement</h1>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2 ml-1">Modifying existing
-                    broadcast details</p>
+
+            <!-- Main Title Content -->
+            <div class="flex flex-col gap-1.5">
+                <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">Edit Announcement</h1>
+                <p class="text-[13px] text-base-content/50 font-bold">
+                    Modifying existing broadcast details
+                </p>
             </div>
         </div>
+    </x-slot>
+
+    <div class="py-12 px-4 sm:px-6">
 
         {{-- Main Content Section --}}
         <div class="max-w-6xl mx-auto px-1">
@@ -57,14 +57,13 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-bold text-slate-900 tracking-tight">Announcement Details
-                                        </h3>
-                                        <p class="text-xs font-medium text-slate-400">Update broadcast details</p>
+                                        <h3 class="text-base font-bold text-base-content">Announcement Details</h3>
+                                        <p class="text-xs text-base-content/50">Update broadcast details</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="size-2 rounded-full bg-orange-500 animate-pulse"></span>
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Live
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Live
                                         Editing</span>
                                 </div>
                             </div>
@@ -75,13 +74,13 @@
                                 <div class="form-control w-full">
                                     <label class="label px-1 pt-0 pb-2">
                                         <span
-                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400">Headline
+                                            class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Headline
                                             Title</span>
                                     </label>
                                     <input type="text" name="title" id="title" oninput="updateAnnouncementPreview()"
                                         value="{{ old('title', $announcement->title) }}"
                                         placeholder="Enter a catchy title..."
-                                        class="input input-lg w-full h-16 bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-orange-500/10 transition-all font-bold text-lg placeholder:text-slate-300 placeholder:font-bold border border-transparent focus:border-orange-500/20"
+                                        class="input w-full h-12 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all font-bold text-sm placeholder:text-base-content/30"
                                         required />
                                 </div>
 
@@ -91,13 +90,13 @@
                                     <div class="form-control w-full">
                                         <label class="label px-1 pt-0 pb-2">
                                             <span
-                                                class="text-[10px] font-black uppercase tracking-widest text-slate-400">Detailed
+                                                class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Detailed
                                                 Content</span>
                                         </label>
                                         <textarea name="content" id="content" rows="8"
                                             oninput="updateAnnouncementPreview()"
                                             placeholder="Write your announcement details here..."
-                                            class="textarea w-full h-[208px] bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-orange-500/10 transition-all font-medium text-slate-600 placeholder:text-slate-300 placeholder:font-bold resize-none leading-relaxed p-5 border border-transparent focus:border-orange-500/20"
+                                            class="textarea w-full h-52 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all resize-none leading-relaxed p-4 text-sm"
                                             required>{{ old('content', $announcement->content) }}</textarea>
                                     </div>
 
@@ -106,26 +105,17 @@
                                         <div class="form-control w-full">
                                             <label class="label px-1 pt-0 pb-2">
                                                 <span
-                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</span>
+                                                    class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Category</span>
                                             </label>
                                             <div class="relative group">
                                                 <select name="type" id="type" onchange="updateAnnouncementPreview()"
-                                                    class="select select-lg w-full h-14 bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-orange-500/10 transition-all font-bold text-sm appearance-none cursor-pointer border border-transparent focus:border-orange-500/20"
+                                                    class="select w-full h-12 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all font-bold text-sm cursor-pointer"
                                                     required>
                                                     <option value="info" {{ $announcement->type == 'info' ? 'selected' : '' }}>🔵 Informational</option>
                                                     <option value="success" {{ $announcement->type == 'success' ? 'selected' : '' }}>🟢 Success</option>
                                                     <option value="warning" {{ $announcement->type == 'warning' ? 'selected' : '' }}>🟡 Warning</option>
                                                     <option value="error" {{ $announcement->type == 'error' ? 'selected' : '' }}>🔴 Critical Alert</option>
                                                 </select>
-                                                <div
-                                                    class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-orange-500 transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2.5" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path d="M6 9l6 6l6 -6" />
-                                                    </svg>
-                                                </div>
                                             </div>
                                         </div>
 
@@ -133,11 +123,11 @@
                                         <div class="form-control w-full">
                                             <label class="label px-1 pt-0 pb-2">
                                                 <span
-                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400">Banner
+                                                    class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Banner
                                                     Image</span>
                                             </label>
                                             <div id="dropzone-container"
-                                                class="relative w-full h-[128px] rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-orange-50/50 hover:border-orange-500 transition-all cursor-pointer group overflow-hidden">
+                                                class="relative w-full h-32 rounded-xl border-2 border-dashed border-base-content/20 bg-base-200/30 hover:bg-base-200/50 hover:border-primary/50 transition-all cursor-pointer overflow-hidden">
                                                 <input type="file" id="image" name="image"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
                                                     accept="image/*" onchange="previewAnnouncementImage(this)">
@@ -165,7 +155,7 @@
                                                             </svg>
                                                         </div>
                                                         <p
-                                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                                                             Change Banner</p>
                                                     </div>
                                                 @else
@@ -184,7 +174,7 @@
                                                             </svg>
                                                         </div>
                                                         <p
-                                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                                                             Banner</p>
                                                     </div>
                                                     <div id="image-preview-container"
@@ -203,12 +193,12 @@
                         {{-- Form Actions --}}
                         <div class="flex items-center justify-end gap-4 mt-8">
                             <a href="{{ route('announcements.index') }}"
-                                class="btn bg-white hover:bg-slate-50 text-slate-500 border-none font-bold rounded-2xl px-8 h-12">
-                                Cancel
+                                class="btn bg-[#1e293b] hover:bg-[#334155] h-12 px-6 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-white border-none transition-all">
+                                CANCEL
                             </a>
                             <button type="submit"
-                                class="btn btn-warning h-12 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-warning/25 hover:scale-[1.02] active:scale-[0.98] transition-all border-none text-white">
-                                Save Changes
+                                class="btn btn-warning h-12 px-8 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-white shadow-xl shadow-warning/20 hover:scale-[1.02] active:scale-[0.98] transition-all border-none">
+                                SAVE CHANGES
                             </button>
                         </div>
                     </div>
@@ -216,7 +206,7 @@
                     {{-- Right Column: Live Preview --}}
                     <div class="lg:col-span-4 sticky top-8">
                         <div
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/40 mb-4 px-1 flex items-center gap-2">
+                            class="text-[10px] font-bold uppercase tracking-widest text-orange-500/40 mb-4 px-1 flex items-center gap-2">
                             <div class="size-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]">
                             </div>
                             Live View Preview
@@ -234,18 +224,18 @@
                             <div class="p-8 pb-4 relative z-10">
                                 <div class="flex items-center justify-between mb-6">
                                     <div id="preview-type-badge"
-                                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm transition-all duration-300">
+                                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm transition-all duration-300">
                                         <div class="size-2 rounded-full animate-pulse shadow-sm"></div>
                                         Loading...
                                     </div>
                                     <span
-                                        class="text-[10px] font-black text-slate-300 uppercase tracking-widest">{{ $announcement->created_at->format('M d, Y') }}</span>
+                                        class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ $announcement->created_at->format('M d, Y') }}</span>
                                 </div>
 
                                 {{-- Inner Content Preview --}}
                                 <div class="space-y-4">
                                     <h4 id="preview-title"
-                                        class="text-3xl font-black text-slate-900 leading-tight break-words transition-all">
+                                        class="text-2xl font-bold text-slate-900 leading-tight break-words transition-all">
                                         {{ $announcement->title }}
                                     </h4>
                                     <div class="h-px w-12 bg-slate-100"></div>
@@ -299,7 +289,7 @@
                                         </div>
                                         <div class="flex flex-col">
                                             <span
-                                                class="text-[10px] font-black uppercase text-slate-800 tracking-tight">{{ $announcement->user->name }}</span>
+                                                class="text-[10px] font-bold uppercase text-slate-800 tracking-tight">{{ $announcement->user->name }}</span>
                                             <span
                                                 class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter italic">Broadcaster</span>
                                         </div>
@@ -360,7 +350,7 @@
                 const pBadgeDot = pBadge.querySelector('div');
                 const typeText = typeEl.options[typeEl.selectedIndex].text.split(' ')[1]; // Get text after emoji
 
-                pBadge.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm transition-all duration-300 ';
+                pBadge.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm transition-all duration-300 ';
                 pBadgeDot.className = 'size-2 rounded-full animate-pulse ';
 
                 if (type === 'success') {

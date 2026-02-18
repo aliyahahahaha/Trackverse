@@ -1,28 +1,49 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="badge badge-lg font-bold text-[10px] uppercase tracking-widest bg-primary/5 text-primary border-0">
-                        Dashboard</div>
-                    <div class="h-4 w-px bg-base-content/10"></div>
-                    <span class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">Calendar</span>
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
+                    <a href="{{ route('dashboard') }}"
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        DASHBOARD
+                    </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <a href="{{ route('calendar.index') }}"
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        CALENDAR VIEW
+                    </a>
                 </div>
+            </div>
 
-                <div class="flex items-center gap-4">
+            <!-- Main Header Content -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
                     <div
-                        class="size-12 rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-primary-content">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none"
+                        class="size-16 rounded-[1.5rem] bg-primary shadow-2xl shadow-primary/20 flex items-center justify-center text-primary-content shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <path d="M16 2v4M8 2v4M3 10h18" />
                         </svg>
                     </div>
-                    <div>
-                        <h1 class="text-3xl font-black text-base-content tracking-tight">Calendar</h1>
-                        <p class="text-sm font-medium text-base-content/60 mt-0.5">Track your tickets and tasks
-                            timeline.</p>
+                    <div class="flex flex-col gap-1.5">
+                        <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">Timeline Calendar
+                        </h1>
+                        <p class="text-[13px] text-base-content/50 font-bold mt-0.5">Track your project milestones and
+                            task schedules visually.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="px-5 py-3 bg-white rounded-2xl border border-base-content/5 shadow-sm">
+                        <span
+                            class="text-[9px] font-bold uppercase tracking-widest text-base-content/30 block leading-none mb-1.5">Scheduled
+                            Events</span>
+                        <span
+                            class="text-sm font-bold text-base-content leading-none">{{ $ticketsAssigned + $ticketsCreated + $trackersAssigned + $trackersCreated }}
+                            Total Events</span>
                     </div>
                 </div>
             </div>
@@ -33,27 +54,39 @@
         {{-- KPI Cards --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Tickets Assigned --}}
-            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #f59e0b, #f97316); color: #0f172a;">
-                <div class="text-4xl font-black mb-1" style="color: #0f172a;">{{ $ticketsAssigned }}</div>
-                <div class="text-xs font-black uppercase tracking-wider opacity-60">Tickets Assigned</div>
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5"
+                style="background: linear-gradient(135deg, #f59e0b, #f97316); color: #0f172a;">
+                <div class="text-3xl font-bold mb-1" style="color: #0f172a;">{{ $ticketsAssigned }}</div>
+                <div class="text-xs font-bold uppercase tracking-wider opacity-60">
+                    {{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Open Tickets' : 'Tickets Assigned' }}
+                </div>
             </div>
 
             {{-- Tickets Created --}}
-            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff;">
-                <div class="text-4xl font-black mb-1">{{ $ticketsCreated }}</div>
-                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tickets Created</div>
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5"
+                style="background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff;">
+                <div class="text-3xl font-bold mb-1">{{ $ticketsCreated }}</div>
+                <div class="text-xs font-bold uppercase tracking-wider opacity-90">
+                    {{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Total Tickets' : 'Tickets Created' }}
+                </div>
             </div>
 
             {{-- Tasks Assigned --}}
-            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #ffffff;">
-                <div class="text-4xl font-black mb-1">{{ $trackersAssigned }}</div>
-                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tasks Assigned</div>
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5"
+                style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #ffffff;">
+                <div class="text-3xl font-bold mb-1">{{ $trackersAssigned }}</div>
+                <div class="text-xs font-bold uppercase tracking-wider opacity-90">
+                    {{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Total Tasks' : 'Tasks Assigned' }}
+                </div>
             </div>
 
             {{-- Tasks Created --}}
-            <div class="card shadow-xl rounded-2xl p-5 border border-black/5" style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff;">
-                <div class="text-4xl font-black mb-1">{{ $trackersCreated }}</div>
-                <div class="text-xs font-black uppercase tracking-wider opacity-90">Tasks Created</div>
+            <div class="card shadow-xl rounded-2xl p-5 border border-black/5"
+                style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff;">
+                <div class="text-3xl font-bold mb-1">{{ $trackersCreated }}</div>
+                <div class="text-xs font-bold uppercase tracking-wider opacity-90">
+                    {{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Completed Tasks' : 'Tasks Completed' }}
+                </div>
             </div>
         </div>
 
@@ -65,23 +98,28 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #f59e0b !important;"></div>
-                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Ticket - Assigned
-                        (Open)</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm"
+                        style="background-color: #f59e0b !important;"></div>
+                    <span
+                        class="text-sm font-bold uppercase tracking-tight text-slate-800">{{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Tickets - Open' : 'Ticket - Assigned (Open)' }}</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #0ea5e9 !important;"></div>
-                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Ticket - Created by
-                        Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm"
+                        style="background-color: #0ea5e9 !important;"></div>
+                    <span
+                        class="text-sm font-bold uppercase tracking-tight text-slate-800">{{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Tickets - Total' : 'Ticket - Created by Me' }}</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #8b5cf6 !important;"></div>
-                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Task - Assigned to
-                        Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm"
+                        style="background-color: #8b5cf6 !important;"></div>
+                    <span
+                        class="text-sm font-bold uppercase tracking-tight text-slate-800">{{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Tasks - Total' : 'Task - Assigned to Me' }}</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="size-6 rounded-lg border border-black/10 shadow-sm" style="background-color: #ec4899 !important;"></div>
-                    <span class="text-sm font-black uppercase tracking-tight text-slate-800">Task - Created by Me</span>
+                    <div class="size-6 rounded-lg border border-black/10 shadow-sm"
+                        style="background-color: #ec4899 !important;"></div>
+                    <span
+                        class="text-sm font-bold uppercase tracking-tight text-slate-800">{{ (auth()->user()->isAdmin() || auth()->user()->isDirector()) ? 'Tasks - Completed' : 'Task - Completed' }}</span>
                 </div>
             </div>
         </div>
@@ -153,69 +191,69 @@
                 // Custom styling for FullCalendar
                 const style = document.createElement('style');
                 style.textContent = `
-                                .fc {
-                                    font-family: inherit;
-                                }
-                                .fc .fc-toolbar-title {
-                                    font-size: 1.5rem;
-                                    font-weight: 900;
-                                    color: #1e293b;
-                                }
-                                .fc .fc-button {
-                                    background-color: #6366f1;
-                                    border: none;
-                                    border-radius: 0.5rem;
-                                    padding: 0.5rem 1rem;
-                                    font-weight: 700;
-                                    text-transform: uppercase;
-                                    font-size: 0.75rem;
-                                    letter-spacing: 0.05em;
-                                    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
-                                }
-                                .fc .fc-button:hover {
-                                    background-color: #4f46e5;
-                                }
-                                .fc .fc-button-active {
-                                    background-color: #4338ca !important;
-                                }
-                                .fc .fc-button:disabled {
-                                    opacity: 0.5;
-                                }
-                                .fc-theme-standard td, .fc-theme-standard th {
-                                    border-color: #e2e8f0;
-                                }
-                                .fc .fc-daygrid-day-number {
-                                    font-weight: 700;
-                                    color: #475569;
-                                    padding: 0.5rem;
-                                }
-                                .fc .fc-col-header-cell {
-                                    background-color: #f8fafc;
-                                    font-weight: 800;
-                                    text-transform: uppercase;
-                                    font-size: 0.75rem;
-                                    letter-spacing: 0.05em;
-                                    color: #64748b;
-                                    padding: 1rem 0.5rem;
-                                }
-                                .fc .fc-daygrid-day.fc-day-today {
-                                    background-color: #eef2ff !important;
-                                }
-                                .fc .fc-event {
-                                    border: none;
-                                    margin-bottom: 2px;
-                                }
-                                .fc .fc-event-title {
-                                    font-weight: 700;
-                                }
-                                .fc .fc-more-link {
-                                    font-weight: 700;
-                                    color: #6366f1;
-                                }
-                                .fc .fc-list-event:hover td {
-                                    background-color: #f8fafc;
-                                }
-                            `;
+                                                                    .fc {
+                                                                        font-family: inherit;
+                                                                    }
+                                                                    .fc .fc-toolbar-title {
+                                                                        font-size: 1.5rem;
+                                                                        font-weight: 900;
+                                                                        color: #1e293b;
+                                                                    }
+                                                                    .fc .fc-button {
+                                                                        background-color: #6366f1;
+                                                                        border: none;
+                                                                        border-radius: 0.5rem;
+                                                                        padding: 0.5rem 1rem;
+                                                                        font-weight: 700;
+                                                                        text-transform: uppercase;
+                                                                        font-size: 0.75rem;
+                                                                        letter-spacing: 0.05em;
+                                                                        box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+                                                                    }
+                                                                    .fc .fc-button:hover {
+                                                                        background-color: #4f46e5;
+                                                                    }
+                                                                    .fc .fc-button-active {
+                                                                        background-color: #4338ca !important;
+                                                                    }
+                                                                    .fc .fc-button:disabled {
+                                                                        opacity: 0.5;
+                                                                    }
+                                                                    .fc-theme-standard td, .fc-theme-standard th {
+                                                                        border-color: #e2e8f0;
+                                                                    }
+                                                                    .fc .fc-daygrid-day-number {
+                                                                        font-weight: 700;
+                                                                        color: #475569;
+                                                                        padding: 0.5rem;
+                                                                    }
+                                                                    .fc .fc-col-header-cell {
+                                                                        background-color: #f8fafc;
+                                                                        font-weight: 800;
+                                                                        text-transform: uppercase;
+                                                                        font-size: 0.75rem;
+                                                                        letter-spacing: 0.05em;
+                                                                        color: #64748b;
+                                                                        padding: 1rem 0.5rem;
+                                                                    }
+                                                                    .fc .fc-daygrid-day.fc-day-today {
+                                                                        background-color: #eef2ff !important;
+                                                                    }
+                                                                    .fc .fc-event {
+                                                                        border: none;
+                                                                        margin-bottom: 2px;
+                                                                    }
+                                                                    .fc .fc-event-title {
+                                                                        font-weight: 700;
+                                                                    }
+                                                                    .fc .fc-more-link {
+                                                                        font-weight: 700;
+                                                                        color: #6366f1;
+                                                                    }
+                                                                    .fc .fc-list-event:hover td {
+                                                                        background-color: #f8fafc;
+                                                                    }
+                                                                `;
                 document.head.appendChild(style);
             });
         </script>

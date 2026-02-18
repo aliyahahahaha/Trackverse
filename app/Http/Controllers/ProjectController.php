@@ -16,7 +16,7 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDirector()) {
             $ownedProjects = Project::where('created_by', $user->id)->latest()->get();
             $joinedProjects = Project::where('created_by', '!=', $user->id)
                 ->whereHas('members', fn($q) => $q->where('user_id', $user->id))
@@ -60,7 +60,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string|in:active,completed,on_hold',
+            'status' => 'required|string|in:planning,active,on_hold,completed',
         ]);
 
         $project = new Project($validated);
@@ -107,7 +107,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string|in:active,completed,on_hold',
+            'status' => 'required|string|in:planning,active,on_hold,completed',
         ]);
 
         $project->update($validated);

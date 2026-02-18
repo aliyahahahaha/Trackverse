@@ -1,164 +1,118 @@
 <x-app-layout>
-    <div class="min-h-screen w-full bg-gray-50 py-12 px-4 sm:px-6">
-
-        {{-- Header Navigation --}}
-        <div class="max-w-6xl mx-auto mb-10 space-y-5">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('announcements.index') }}"
-                    class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                    <span class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">←
-                        BACK
-                        TO ANNOUNCEMENTS</span>
-                </a>
-                <div class="h-5 w-px bg-base-content/10"></div>
-                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    <div class="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 5v14M5 12h14" />
-                        </svg>
+    <x-slot name="header">
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
+                    <a href="{{ route('announcements.index') }}"
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        ← BACK TO ANNOUNCEMENTS
+                    </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <div
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        NEW BROADCAST
                     </div>
-                    New Draft
                 </div>
             </div>
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Create Announcement</h1>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2 ml-1">Drafting a new broadcast
-                    for the system</p>
+
+            <!-- Main Title Content -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
+                    <div
+                        class="size-16 rounded-[1.5rem] bg-primary shadow-2xl shadow-primary/20 flex items-center justify-center text-primary-content shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5l0 14" />
+                            <path d="M5 12l14 0" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">Create
+                            Announcement</h1>
+                        <p class="text-[13px] text-base-content/50 font-bold mt-0.5">Drafting a new broadcast for the
+                            system.</p>
+                    </div>
+                </div>
             </div>
         </div>
+    </x-slot>
 
-        {{-- Main Content Section --}}
+    <div class="py-12 px-6 lg:px-10">
         <div class="max-w-6xl mx-auto px-1">
             <form action="{{ route('announcements.store') }}" method="POST" enctype="multipart/form-data"
                 id="announcement-form">
                 @csrf
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
                     {{-- Left Column: Form --}}
-                    <div class="lg:col-span-8">
+                    <div class="lg:col-span-8 space-y-8">
                         <div
                             class="card bg-white shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-[2rem] overflow-hidden">
-
-                            {{-- Card Header --}}
-                            <div
-                                class="px-8 py-6 border-b border-base-content/5 bg-white flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="size-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path
-                                                d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-4v-4" />
-                                            <path d="M11 20l4 0" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-slate-900 tracking-tight">Announcement Details
-                                        </h3>
-                                        <p class="text-xs font-medium text-slate-400">Compose your message</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="size-2 rounded-full bg-blue-500 animate-pulse"></span>
-                                    <span
-                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400">Drafting</span>
-                                </div>
-                            </div>
-
-                            {{-- Card Body --}}
                             <div class="p-8 space-y-8">
                                 {{-- Headline Title --}}
                                 <div class="form-control w-full">
                                     <label class="label px-1 pt-0 pb-2">
                                         <span
-                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400">Headline
+                                            class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Headline
                                             Title</span>
                                     </label>
                                     <input type="text" name="title" id="title" oninput="updateAnnouncementPreview()"
                                         placeholder="Enter a catchy title..."
-                                        class="input input-lg w-full h-16 bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all font-bold text-lg placeholder:text-slate-300 placeholder:font-bold border border-transparent focus:border-blue-500/20"
+                                        class="input w-full h-12 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all font-bold text-sm placeholder:text-base-content/30 placeholder:font-medium"
                                         required />
                                 </div>
 
                                 {{-- Details & Content --}}
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                    {{-- Content Textarea --}}
                                     <div class="form-control w-full">
                                         <label class="label px-1 pt-0 pb-2">
                                             <span
-                                                class="text-[10px] font-black uppercase tracking-widest text-slate-400">Detailed
+                                                class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Detailed
                                                 Content</span>
                                         </label>
                                         <textarea name="content" id="content" rows="8"
                                             oninput="updateAnnouncementPreview()"
                                             placeholder="Write your announcement details here..."
-                                            class="textarea w-full h-[208px] bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-slate-600 placeholder:text-slate-300 placeholder:font-bold resize-none leading-relaxed p-5 border border-transparent focus:border-blue-500/20"
+                                            class="textarea w-full h-52 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all resize-none leading-relaxed p-4 text-sm placeholder:text-base-content/30 placeholder:font-medium"
                                             required></textarea>
                                     </div>
 
-                                    {{-- Category Selection & More --}}
                                     <div class="space-y-6">
                                         <div class="form-control w-full">
                                             <label class="label px-1 pt-0 pb-2">
                                                 <span
-                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</span>
+                                                    class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Category</span>
                                             </label>
-                                            <div class="relative group">
-                                                <select name="type" id="type" onchange="updateAnnouncementPreview()"
-                                                    class="select select-lg w-full h-14 bg-slate-50 border-none rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all font-bold text-sm appearance-none cursor-pointer border border-transparent focus:border-blue-500/20"
-                                                    required>
-                                                    <option value="info" selected>🔵 Informational</option>
-                                                    <option value="success">🟢 Success</option>
-                                                    <option value="warning">🟡 Warning</option>
-                                                    <option value="error">🔴 Critical Alert</option>
-                                                </select>
-                                                <div
-                                                    class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-blue-500 transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2.5" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path d="M6 9l6 6l6 -6" />
-                                                    </svg>
-                                                </div>
-                                            </div>
+                                            <select name="type" id="type" onchange="updateAnnouncementPreview()"
+                                                class="select w-full h-12 bg-base-200/50 border border-base-content/10 rounded-xl focus:bg-base-100 focus:border-primary transition-all font-bold text-sm"
+                                                required>
+                                                <option value="info" selected>🔵 Informational</option>
+                                                <option value="success">🟢 Success</option>
+                                                <option value="warning">🟡 Warning</option>
+                                                <option value="error">🔴 Critical Alert</option>
+                                            </select>
                                         </div>
 
-                                        {{-- Banner Image Dropzone --}}
                                         <div class="form-control w-full">
                                             <label class="label px-1 pt-0 pb-2">
                                                 <span
-                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400">Banner
+                                                    class="text-[10px] font-bold uppercase tracking-widest text-base-content/50">Banner
                                                     Image</span>
                                             </label>
-                                            <div id="dropzone-container"
-                                                class="relative w-full h-[128px] rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-500 transition-all cursor-pointer group overflow-hidden">
-                                                <input type="file" id="image" name="image"
+                                            <div
+                                                class="relative w-full h-32 rounded-xl border-2 border-dashed border-base-content/20 bg-base-200/30 hover:border-primary/50 transition-all cursor-pointer overflow-hidden">
+                                                <input type="file" name="image" id="image"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
                                                     accept="image/*" onchange="previewAnnouncementImage(this)">
                                                 <div id="upload-placeholder"
                                                     class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 p-4 text-center">
-                                                    <div
-                                                        class="size-8 rounded-full bg-white shadow-sm border border-slate-100 text-blue-500 flex items-center justify-center mb-1 group-hover:scale-110 transition-all">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2.5" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                            <path
-                                                                d="M4 14.899a7 7 0 1 1 15.718 -2.908a7 7 0 1 1 -5.718 2.908" />
-                                                            <path d="M12 12v9" />
-                                                            <path d="M9 16l3 -3l3 3" />
-                                                        </svg>
-                                                    </div>
                                                     <p
-                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                                        Banner</p>
+                                                        class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                                        Click to upload banner</p>
                                                 </div>
-                                                <div id="image-preview-container"
-                                                    class="hidden absolute inset-0 z-20 bg-slate-100">
+                                                <div id="image-preview-container" class="hidden absolute inset-0 z-20">
                                                     <img id="preview-img-tag" src="" class="w-full h-full object-cover">
                                                 </div>
                                             </div>
@@ -166,18 +120,16 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
-                        {{-- Form Actions --}}
-                        <div class="flex items-center justify-end gap-4 mt-8">
+                        <div class="flex items-center justify-end gap-3 mt-8">
                             <a href="{{ route('announcements.index') }}"
-                                class="btn bg-white hover:bg-slate-50 text-slate-500 border-none font-bold rounded-2xl px-8 h-12">
-                                Cancel
+                                class="btn bg-[#1e293b] hover:bg-[#334155] h-12 px-6 rounded-2xl font-bold uppercase text-[10px] tracking-widest text-white border-none transition-all">
+                                CANCEL
                             </a>
                             <button type="submit"
-                                class="btn btn-primary h-12 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all border-none">
-                                Create Announcement
+                                class="btn btn-primary h-12 px-8 rounded-2xl font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 border-none text-white">
+                                CREATE ANNOUNCEMENT
                             </button>
                         </div>
                     </div>
@@ -185,185 +137,72 @@
                     {{-- Right Column: Live Preview --}}
                     <div class="lg:col-span-4 sticky top-8">
                         <div
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500/40 mb-4 px-1 flex items-center gap-2">
-                            <div class="size-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                            class="text-[10px] font-bold uppercase tracking-widest text-blue-500/40 mb-4 px-1 flex items-center gap-2">
+                            <div class="size-1.5 rounded-full bg-blue-500"></div>
                             Live View Preview
                         </div>
-
                         <div
-                            class="card bg-white shadow-2xl shadow-blue-500/[0.05] border border-slate-100 rounded-[2.5rem] overflow-hidden min-h-[480px] flex flex-col justify-between relative group">
-
-                            {{-- Decorative top glow --}}
-                            <div
-                                class="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none opacity-50">
+                            class="card bg-white shadow-2xl border border-slate-100 rounded-[2.5rem] overflow-hidden min-h-[400px] flex flex-col justify-between">
+                            <div class="p-8">
+                                <div id="preview-type-badge"
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border bg-blue-50 text-blue-500 border-blue-100 mb-4">
+                                    Information
+                                </div>
+                                <h4 id="preview-title" class="text-xl font-bold text-slate-300 italic mb-4">Highlight
+                                    Title</h4>
+                                <p id="preview-content" class="text-sm text-slate-300 font-medium italic line-clamp-6">
+                                    Content preview...</p>
                             </div>
-
-                            {{-- Preview Badge --}}
-                            <div class="p-8 pb-4 relative z-10">
-                                <div class="flex items-center justify-between mb-6">
-                                    <div id="preview-type-badge"
-                                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm bg-blue-50 text-blue-500 border-blue-100">
-                                        <div class="size-2 rounded-full bg-blue-500 animate-pulse"></div>
-                                        Information
-                                    </div>
-                                    <span
-                                        class="text-[10px] font-black text-slate-300 uppercase tracking-widest">{{ now()->format('M d, Y') }}</span>
-                                </div>
-
-                                {{-- Inner Content Preview --}}
-                                <div class="space-y-4">
-                                    <h4 id="preview-title"
-                                        class="text-3xl font-black text-slate-300 italic leading-tight break-words transition-all">
-                                        Highlight Title
-                                    </h4>
-                                    <div class="h-px w-12 bg-slate-100"></div>
-                                    <p id="preview-content"
-                                        class="text-sm text-slate-300 font-medium italic leading-relaxed break-words line-clamp-6 transition-all">
-                                        Your announcement content will be displayed here in real-time as you type...
-                                    </p>
-                                </div>
+                            <div id="preview-banner-container"
+                                class="h-40 mx-6 rounded-[1.5rem] bg-slate-50 border border-slate-100 overflow-hidden mb-8 flex items-center justify-center">
+                                <img id="preview-banner-img" src="" class="hidden w-full h-full object-cover">
+                                <span id="preview-banner-placeholder" class="text-slate-200">No Banner</span>
                             </div>
-
-                            {{-- Preview Image/Author Section --}}
-                            <div class="relative mt-4">
-                                {{-- Preview Banner --}}
-                                <div id="preview-banner-container"
-                                    class="h-48 mx-6 rounded-[1.5rem] bg-slate-50 border border-slate-100 overflow-hidden relative mb-6">
-                                    <div id="preview-banner-placeholder"
-                                        class="absolute inset-0 flex items-center justify-center text-slate-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-10" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                            <circle cx="8.5" cy="8.5" r="1.5" />
-                                            <polyline points="21 15 16 10 5 21" />
-                                        </svg>
-                                    </div>
-                                    <img id="preview-banner-img" src="" class="hidden w-full h-full object-cover">
-                                </div>
-
-                                {{-- Author Preview --}}
-                                <div class="px-8 pb-8 flex items-center justify-between border-t border-slate-50 pt-6">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="size-10 rounded-2xl bg-slate-50 border border-slate-100 p-0.5 overflow-hidden shadow-sm">
-                                            <img src="{{ auth()->user()->profile_photo_url }}"
-                                                class="size-full object-cover rounded-[0.8rem]" />
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="text-[10px] font-black uppercase text-slate-800 tracking-tight">{{ auth()->user()->name }}</span>
-                                            <span
-                                                class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter italic">Broadcaster</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M5 12l14 0" />
-                                            <path d="M13 18l6 -6" />
-                                            <path d="M13 6l6 6" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-
                 </div>
             </form>
         </div>
-
-        <script>
-            function updateAnnouncementPreview() {
-                const title = document.getElementById('title').value;
-                const content = document.getElementById('content').value;
-                const typeEl = document.getElementById('type');
-                const type = typeEl.value;
-
-                // Preview Title
-                const pTitle = document.getElementById('preview-title');
-                if (title) {
-                    pTitle.textContent = title;
-                    pTitle.classList.remove('text-slate-300', 'italic');
-                    pTitle.classList.add('text-slate-900');
-                } else {
-                    pTitle.textContent = 'Highlight Title';
-                    pTitle.classList.add('text-slate-300', 'italic');
-                    pTitle.classList.remove('text-slate-900');
-                }
-
-                // Preview Content
-                const pContent = document.getElementById('preview-content');
-                if (content) {
-                    pContent.textContent = content;
-                    pContent.classList.remove('text-slate-300', 'italic');
-                    pContent.classList.add('text-slate-600');
-                } else {
-                    pContent.textContent = 'Your announcement content will be displayed here in real-time as you type...';
-                    pContent.classList.add('text-slate-300', 'italic');
-                    pContent.classList.remove('text-slate-600');
-                }
-
-                // Preview Type Badge
-                const pBadge = document.getElementById('preview-type-badge');
-                const pBadgeDot = pBadge.querySelector('div');
-                const typeText = typeEl.options[typeEl.selectedIndex].text.split(' ')[1]; // Get text after emoji
-
-                pBadge.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm transition-all duration-300 ';
-                pBadgeDot.className = 'size-2 rounded-full animate-pulse ';
-
-                if (type === 'success') {
-                    pBadge.classList.add('bg-green-50', 'text-green-600', 'border-green-100');
-                    pBadgeDot.classList.add('bg-green-500');
-                } else if (type === 'warning') {
-                    pBadge.classList.add('bg-amber-50', 'text-amber-600', 'border-amber-100');
-                    pBadgeDot.classList.add('bg-amber-500');
-                } else if (type === 'error') {
-                    pBadge.classList.add('bg-rose-50', 'text-rose-600', 'border-rose-100');
-                    pBadgeDot.classList.add('bg-rose-500');
-                } else {
-                    pBadge.classList.add('bg-blue-50', 'text-blue-500', 'border-blue-100');
-                    pBadgeDot.classList.add('bg-blue-500');
-                }
-
-                // Keep the dot and text
-                pBadge.innerHTML = '';
-                pBadge.appendChild(pBadgeDot);
-                pBadge.appendChild(document.createTextNode(typeText));
-            }
-
-            function previewAnnouncementImage(input) {
-                const file = input.files[0];
-                const previewImg = document.getElementById('preview-img-tag');
-                const previewContainer = document.getElementById('image-preview-container');
-                const placeholder = document.getElementById('upload-placeholder');
-
-                const livePreviewImg = document.getElementById('preview-banner-img');
-                const livePreviewPlaceholder = document.getElementById('preview-banner-placeholder');
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        // Dropzone preview
-                        previewImg.src = e.target.result;
-                        previewContainer.classList.remove('hidden');
-                        placeholder.classList.add('opacity-0');
-
-                        // Card preview
-                        livePreviewImg.src = e.target.result;
-                        livePreviewImg.classList.remove('hidden');
-                        livePreviewPlaceholder.classList.add('hidden');
-                    }
-                    reader.readAsDataURL(file);
-                }
-            }
-
-            // Initial call
-            document.addEventListener('DOMContentLoaded', updateAnnouncementPreview);
-        </script>
     </div>
+
+    <script>
+        function updateAnnouncementPreview() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const typeEl = document.getElementById('type');
+
+            const pTitle = document.getElementById('preview-title');
+            pTitle.textContent = title || 'Highlight Title';
+            pTitle.className = title ? 'text-xl font-bold text-slate-900 mb-4' : 'text-xl font-bold text-slate-300 italic mb-4';
+
+            const pContent = document.getElementById('preview-content');
+            pContent.textContent = content || 'Content preview...';
+            pContent.className = content ? 'text-sm text-slate-600 font-medium line-clamp-6' : 'text-sm text-slate-300 font-medium italic line-clamp-6';
+
+            const pBadge = document.getElementById('preview-type-badge');
+            const type = typeEl.value;
+            pBadge.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-4 ';
+            if (type === 'success') pBadge.classList.add('bg-green-50', 'text-green-600', 'border-green-100');
+            else if (type === 'warning') pBadge.classList.add('bg-amber-50', 'text-amber-600', 'border-amber-100');
+            else if (type === 'error') pBadge.classList.add('bg-rose-50', 'text-rose-600', 'border-rose-100');
+            else pBadge.classList.add('bg-blue-50', 'text-blue-500', 'border-blue-100');
+            pBadge.textContent = typeEl.options[typeEl.selectedIndex].text.split(' ')[1];
+        }
+
+        function previewAnnouncementImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview-img-tag').src = e.target.result;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                    document.getElementById('upload-placeholder').classList.add('hidden');
+
+                    document.getElementById('preview-banner-img').src = e.target.result;
+                    document.getElementById('preview-banner-img').classList.remove('hidden');
+                    document.getElementById('preview-banner-placeholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </x-app-layout>

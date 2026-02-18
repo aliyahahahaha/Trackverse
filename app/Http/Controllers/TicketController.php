@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\User;
+use App\Notifications\TicketClosed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +18,7 @@ class TicketController extends Controller
         $user = auth()->user();
 
         // Projects user can access
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDirector()) {
             $projectQuery = \App\Models\Project::query();
         } elseif ($user->isTeamLeader()) {
             $projectQuery = \App\Models\Project::where(function ($q) use ($user) {
@@ -31,9 +33,13 @@ class TicketController extends Controller
         $projectIds = (clone $projectQuery)->pluck('id');
 
         $tickets = Ticket::with(['user', 'project', 'assignedTo'])
-            ->whereIn('project_id', $projectIds)
+            ->where(function ($query) use ($projectIds, $user) {
+                $query->whereIn('project_id', $projectIds)
+                    ->orWhere('assigned_to', $user->id)
+                    ->orWhere('user_id', $user->id); // Also show tickets they reported
+            })
             ->latest()
-            ->simplePaginate(10);
+            ->paginate(10);
 
         return view('tickets.index', compact('tickets', 'projects'));
     }
@@ -45,7 +51,11 @@ class TicketController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
+        if (!auth()->user()->hasPermission('create_tickets')) {
+            abort(403, 'You do not have permission to create tickets.');
+        }
+
+        if ($user->isAdmin() || $user->isDirector()) {
             $projectQuery = \App\Models\Project::query();
         } elseif ($user->isTeamLeader()) {
             $projectQuery = \App\Models\Project::where(function ($q) use ($user) {
@@ -57,7 +67,7 @@ class TicketController extends Controller
         }
 
         $projects = $projectQuery->with(['members.todayAvailability'])->where('status', 'active')->orderBy('name')->get();
-        $allUsers = \App\Models\User::with('todayAvailability')->orderBy('name')->get();
+        $allUsers = User::with('todayAvailability')->orderBy('name')->get();
 
         return view('tickets.create', compact('projects', 'allUsers'));
     }
@@ -67,6 +77,10 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasPermission('create_tickets')) {
+            abort(403, 'You do not have permission to create tickets.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'project_id' => 'required|exists:projects,id',
@@ -103,7 +117,7 @@ class TicketController extends Controller
         }
 
         if ($ticket->assigned_to && $ticket->assigned_to != auth()->id()) {
-            \App\Models\User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
+            User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
         }
 
         return redirect()->route('tickets.index')->with('success', 'Ticket created successfully.');
@@ -121,7 +135,7 @@ class TicketController extends Controller
         $this->authorizeTicketAccess($ticket, 'edit');
 
         $user = auth()->user();
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDirector()) {
             $projectQuery = \App\Models\Project::query();
         } elseif ($user->isTeamLeader()) {
             $projectQuery = \App\Models\Project::where(function ($q) use ($user) {
@@ -133,7 +147,7 @@ class TicketController extends Controller
         }
 
         $projects = $projectQuery->with(['members.todayAvailability'])->where('status', 'active')->orderBy('name')->get();
-        $allUsers = \App\Models\User::with('todayAvailability')->orderBy('name')->get();
+        $allUsers = User::with('todayAvailability')->orderBy('name')->get();
 
         return view('tickets.edit', compact('ticket', 'projects', 'allUsers'));
     }
@@ -159,6 +173,8 @@ class TicketController extends Controller
 
         $originalAssignee = $ticket->assigned_to;
 
+        $oldStatus = $ticket->status;
+
         $ticket->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -169,7 +185,12 @@ class TicketController extends Controller
         ]);
 
         if ($ticket->assigned_to && $ticket->assigned_to != $originalAssignee && $ticket->assigned_to != auth()->id()) {
-            \App\Models\User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
+            User::find($ticket->assigned_to)?->notify(new \App\Notifications\TicketAssigned($ticket));
+        }
+
+        // Send notifications if ticket is closed or resolved
+        if (in_array($ticket->status, ['resolved', 'closed']) && !in_array($oldStatus, ['resolved', 'closed'])) {
+            $this->notifyTicketStakeholders($ticket);
         }
 
         return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully.');
@@ -179,13 +200,21 @@ class TicketController extends Controller
     {
         $this->authorizeTicketAccess($ticket, 'close');
 
+        $oldStatus = $ticket->status;
         $ticket->update(['status' => 'closed']);
+
+        if ($oldStatus !== 'closed') {
+            $this->notifyTicketStakeholders($ticket);
+        }
 
         return back()->with('success', 'Ticket closed successfully.');
     }
 
     public function destroy(Ticket $ticket)
     {
+        if (!auth()->user()->hasPermission('delete_tickets')) {
+            abort(403, 'You do not have permission to delete tickets.');
+        }
         $this->authorizeTicketAccess($ticket, 'delete');
         if ($ticket->attachment_path) {
             Storage::disk('public')->delete($ticket->attachment_path);
@@ -197,19 +226,67 @@ class TicketController extends Controller
     private function authorizeTicketAccess(Ticket $ticket, $action = 'view')
     {
         $user = auth()->user();
-        if ($user->isAdmin())
+        if ($user->isAdmin()) {
             return;
+        }
 
-        // Check if user is member of the project (required for all actions)
-        if (!$ticket->project->members->contains($user->id) && $ticket->project->created_by !== $user->id) {
+        if ($user->isDirector()) {
+            if ($action === 'view') {
+                return;
+            }
+            abort(403, 'Directors have view-only access.');
+        }
+
+        // Check if user is member of the project, reporter, or assigned user
+        $isMember = $ticket->project->members->contains($user->id);
+        $isCreator = $ticket->project->created_by === $user->id;
+        $isReporter = $ticket->user_id === $user->id;
+        $isAssigned = $ticket->assigned_to === $user->id;
+
+        if (!$isMember && !$isCreator && !$isReporter && !$isAssigned) {
             abort(403, 'Unauthorized access to this project\'s tickets.');
         }
 
-        // For modifying actions, check if user is the reporter
-        if (in_array($action, ['edit', 'delete', 'update', 'close'])) {
+        // For modifying actions, check if user is the reporter or assigned user
+        if (in_array($action, ['edit', 'delete', 'update'])) {
             if ($ticket->user_id !== $user->id) {
                 abort(403, 'You can only modify tickets that you reported.');
             }
+        }
+
+        // For closing, allow reporter, assigned user, or team leaders in the project
+        if ($action === 'close') {
+            $canClose = $ticket->user_id === $user->id || $ticket->assigned_to === $user->id;
+
+            // Team leaders can close tickets in projects they manage
+            if (!$canClose && $user->isTeamLeader()) {
+                $canClose = $isMember || $isCreator;
+            }
+
+            if (!$canClose) {
+                abort(403, 'You can only close tickets that you reported, are assigned to, or manage.');
+            }
+        }
+    }
+
+    private function notifyTicketStakeholders(Ticket $ticket)
+    {
+        $recipients = collect();
+
+        // Add the reporter
+        if ($ticket->user_id && $ticket->user_id != auth()->id()) {
+            $recipients->push(User::find($ticket->user_id));
+        }
+
+        // Add Admins and Directors
+        $adminsAndDirectors = User::whereIn('role', [User::ROLE_ADMIN, User::ROLE_DIRECTOR])
+            ->where('id', '!=', auth()->id())
+            ->get();
+
+        $recipients = $recipients->merge($adminsAndDirectors)->unique('id')->filter();
+
+        foreach ($recipients as $recipient) {
+            $recipient->notify(new TicketClosed($ticket, auth()->user()));
         }
     }
 }

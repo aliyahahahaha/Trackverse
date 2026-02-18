@@ -27,7 +27,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique(User::class)],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', Rule::in(['admin', 'team_leader', 'user'])],
+            'role' => ['required', 'string', Rule::in(['admin', 'director', 'team_leader', 'user'])],
             'profile_photo' => ['nullable', 'image', 'max:3072'], // 3MB Max
         ];
     }

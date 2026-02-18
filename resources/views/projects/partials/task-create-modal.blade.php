@@ -1,7 +1,7 @@
 <div id="task-create-modal" class="overlay modal overlay-open:opacity-100 hidden" role="dialog" tabindex="-1"
     style="transition: opacity 0.3s ease;">
     <div class="modal-dialog overlay-open:opacity-100" style="transition: opacity 0.3s ease;">
-        <div class="modal-content overflow-hidden border border-base-content/5 shadow-2xl rounded-3xl bg-base-100">
+        <div class="modal-content overflow-visible border border-base-content/5 shadow-2xl rounded-3xl bg-base-100">
             <div
                 class="card-header bg-base-100 border-b border-base-200/50 px-8 py-6 flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -19,8 +19,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-base-content tracking-tight">Draft New Milestone</h3>
-                        <p class="text-[10px] uppercase font-black tracking-widest text-base-content/30 italic">Define
+                        <h3 class="text-xl font-bold text-base-content tracking-tight">Draft New Milestone</h3>
+                        <p class="text-[10px] uppercase font-bold tracking-widest text-base-content/30 italic">Define
                             clear
                             objectives for your squad</p>
                     </div>
@@ -39,12 +39,13 @@
 
             <form action="{{ route('projects.tasks.store', $project) }}" method="POST" class="p-8">
                 @csrf
+                <input type="hidden" name="status" value="pending">
 
                 <!-- Task Name -->
                 <div class="form-control mb-6">
                     <label class="label pb-1.5 pt-0">
                         <span
-                            class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                            class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                             <svg xmlns="http://www.w3.org/2000/svg" style="width: 12px; height: 12px;"
                                 class="flex-shrink-0 text-primary/40" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -67,7 +68,7 @@
                 <div class="form-control mb-6">
                     <label class="label pb-1.5 pt-0">
                         <span
-                            class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                            class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                             <svg xmlns="http://www.w3.org/2000/svg" style="width: 12px; height: 12px;"
                                 class="flex-shrink-0 text-primary/40" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -88,7 +89,7 @@
                     <div class="form-control">
                         <label class="label pb-1.5 pt-0">
                             <span
-                                class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                                class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 12px; height: 12px;"
                                     class="flex-shrink-0 text-primary/40" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -120,12 +121,12 @@
 
                 <div class="pt-8 flex items-center justify-end gap-3 border-t border-base-content/5">
                     <button type="button"
-                        class="btn btn-ghost font-black uppercase tracking-widest text-[9px] rounded-xl px-8 h-12"
+                        class="btn btn-ghost font-bold uppercase tracking-widest text-[9px] rounded-xl px-8 h-12"
                         data-overlay="#task-create-modal">
                         Discard
                     </button>
                     <button type="submit"
-                        class="btn btn-primary px-10 rounded-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 h-12">
+                        class="btn btn-primary px-10 rounded-xl font-bold uppercase tracking-widest shadow-xl shadow-primary/20 h-12">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="w-4 h-4 flex-shrink-0"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             stroke-linecap="round" stroke-linejoin="round">

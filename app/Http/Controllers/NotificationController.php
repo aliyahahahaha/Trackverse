@@ -12,7 +12,12 @@ class NotificationController extends Controller
      */
     public function markAsRead($id)
     {
-        $notification = Auth::user()->notifications()->where('id', $id)->first();
+        $user = Auth::user();
+        if ($user->isAdmin() || $user->isDirector()) {
+            $notification = \Illuminate\Notifications\DatabaseNotification::find($id);
+        } else {
+            $notification = $user->notifications()->where('id', $id)->first();
+        }
 
         if ($notification) {
             $notification->markAsRead();
@@ -26,7 +31,12 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        Auth::user()->unreadNotifications->markAsRead();
+        $user = Auth::user();
+        if ($user->isAdmin() || $user->isDirector()) {
+            \Illuminate\Notifications\DatabaseNotification::whereNull('read_at')->update(['read_at' => now()]);
+        } else {
+            $user->unreadNotifications->markAsRead();
+        }
 
         return back()->with('success', 'All notifications marked as read.');
     }

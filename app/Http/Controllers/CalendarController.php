@@ -12,18 +12,28 @@ class CalendarController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $isPowerUser = $user->isAdmin() || $user->isDirector();
 
         // Calculate statistics
-        $ticketsAssigned = Ticket::where('assigned_to', $user->id)
+        $ticketsAssigned = Ticket::when(!$isPowerUser, fn($q) => $q->where('assigned_to', $user->id))
             ->where('status', 'open')
             ->count();
 
-        $ticketsCreated = Ticket::where('user_id', $user->id)->count();
+        $ticketsCreated = Ticket::when(!$isPowerUser, fn($q) => $q->where('user_id', $user->id))
+            ->count();
 
-        $trackersAssigned = Task::where('assigned_to', $user->id)->count();
+        $trackersAssigned = Task::when(!$isPowerUser, fn($q) => $q->where('assigned_to', $user->id))
+            ->count();
 
-        // Tasks don't have a created_by column, so we'll count all tasks
-        $trackersCreated = 0; // Or you could count tasks from projects the user created
+        // Tasks don't have a direct created_by, so we use projects as proxy for regular users
+        // For power users, we show all tasks as "Created/System" tasks
+        if ($isPowerUser) {
+            $trackersCreated = Task::where('status', 'completed')->count();
+        } else {
+            $trackersCreated = Task::where('assigned_to', $user->id)
+                ->where('status', 'completed')
+                ->count();
+        }
 
         return view('calendar.index', compact(
             'ticketsAssigned',
@@ -36,15 +46,16 @@ class CalendarController extends Controller
     public function events()
     {
         $user = Auth::user();
+        $isPowerUser = $user->isAdmin() || $user->isDirector();
 
-        // Get tickets assigned to user
-        $ticketsAssigned = Ticket::where('assigned_to', $user->id)
+        // Get tickets assigned/open
+        $ticketsAssigned = Ticket::when(!$isPowerUser, fn($q) => $q->where('assigned_to', $user->id))
             ->where('status', 'open')
             ->get()
-            ->map(function ($ticket) {
+            ->map(function ($ticket) use ($isPowerUser) {
                 return [
                     'id' => 'ticket-assigned-' . $ticket->id,
-                    'title' => '[Assigned] #' . ($ticket->ticket_number ?? $ticket->id),
+                    'title' => ($isPowerUser ? '[Open] ' : '[Assigned] ') . '#' . ($ticket->ticket_number ?? $ticket->id),
                     'start' => $ticket->created_at->format('Y-m-d'),
                     'backgroundColor' => '#FFA500',
                     'borderColor' => '#FFA500',
@@ -52,13 +63,13 @@ class CalendarController extends Controller
                 ];
             });
 
-        // Get tickets created by user
-        $ticketsCreated = Ticket::where('user_id', $user->id)
+        // Get tickets created/all
+        $ticketsCreated = Ticket::when(!$isPowerUser, fn($q) => $q->where('user_id', $user->id))
             ->get()
-            ->map(function ($ticket) {
+            ->map(function ($ticket) use ($isPowerUser) {
                 return [
                     'id' => 'ticket-created-' . $ticket->id,
-                    'title' => '[Created] #' . ($ticket->ticket_number ?? $ticket->id),
+                    'title' => ($isPowerUser ? '[Ticket] ' : '[Created] ') . '#' . ($ticket->ticket_number ?? $ticket->id),
                     'start' => $ticket->created_at->format('Y-m-d'),
                     'backgroundColor' => '#3B82F6',
                     'borderColor' => '#3B82F6',
@@ -66,13 +77,13 @@ class CalendarController extends Controller
                 ];
             });
 
-        // Get tasks assigned to user
-        $trackersAssigned = Task::where('assigned_to', $user->id)
+        // Get tasks assigned
+        $trackersAssigned = Task::when(!$isPowerUser, fn($q) => $q->where('assigned_to', $user->id))
             ->get()
-            ->map(function ($task) {
+            ->map(function ($task) use ($isPowerUser) {
                 return [
                     'id' => 'tracker-assigned-' . $task->id,
-                    'title' => '[Assigned] ' . ($task->name ?? $task->title ?? 'Task #' . $task->id),
+                    'title' => ($isPowerUser ? '[Task] ' : '[Assigned] ') . ($task->name ?? $task->title ?? 'Task #' . $task->id),
                     'start' => $task->due_date ? $task->due_date : $task->created_at->format('Y-m-d'),
                     'backgroundColor' => '#8B5CF6',
                     'borderColor' => '#8B5CF6',
@@ -80,15 +91,16 @@ class CalendarController extends Controller
                 ];
             });
 
-        // Get tasks from projects created by user (as a proxy for "created" tasks)
-        $trackersCreated = Task::whereHas('project', function ($query) use ($user) {
-            $query->where('created_by', $user->id);
-        })
-            ->get()
-            ->map(function ($task) {
+        $trackersCreatedQuery = Task::where('status', 'completed');
+        if (!$isPowerUser) {
+            $trackersCreatedQuery->where('assigned_to', $user->id);
+        }
+
+        $trackersCreated = $trackersCreatedQuery->get()
+            ->map(function ($task) use ($isPowerUser) {
                 return [
-                    'id' => 'tracker-created-' . $task->id,
-                    'title' => '[Project Task] ' . ($task->name ?? $task->title ?? 'Task #' . $task->id),
+                    'id' => 'tracker-completed-' . $task->id,
+                    'title' => '[Completed] ' . ($task->name ?? $task->title ?? 'Task #' . $task->id),
                     'start' => $task->due_date ? $task->due_date : $task->created_at->format('Y-m-d'),
                     'backgroundColor' => '#EC4899',
                     'borderColor' => '#EC4899',

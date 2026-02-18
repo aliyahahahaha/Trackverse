@@ -10,14 +10,15 @@ class AvailabilityController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'status' => 'required|in:present,medical_leave,vacation',
+            'status' => 'required|in:available,busy,on_leave',
         ]);
 
-        \App\Models\MemberAvailability::updateOrCreate(
+        MemberAvailability::updateOrCreate(
             ['user_id' => auth()->id(), 'date' => now()->toDateString()],
             ['status' => $validated['status']]
         );
 
-        return back()->with('success', 'Availability status updated successfully.');
+        $statusLabel = ucwords(str_replace('_', ' ', $validated['status']));
+        return back()->with('success', "Availability status updated to {$statusLabel}");
     }
 }

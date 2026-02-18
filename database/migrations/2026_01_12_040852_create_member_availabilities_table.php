@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('date');
-            $table->enum('status', ['present', 'medical_leave', 'vacation'])->default('present');
+            $table->enum('status', ['available', 'busy', 'on_leave'])->default('available');
             $table->timestamps();
 
             $table->unique(['user_id', 'date']); // Prevent duplicate records for the same day

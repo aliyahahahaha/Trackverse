@@ -20,29 +20,25 @@ class VerificationSeeder extends Seeder
         ]);
 
         // Create Project
-        $project = Project::create([
-            'name' => 'Test Project',
-            'description' => 'A test project',
-            'status' => 'active',
-            'created_by' => $user->id,
-        ]);
+        // $project = Project::create([
+        //     'name' => 'Test Project',
+        //     'description' => 'A test project',
+        //     'status' => 'active',
+        //     'created_by' => $user->id,
+        // ]);
 
         // Assign User to Project
-        $project->members()->attach($user->id);
+        // $project->members()->attach($user->id);
 
         // Create Task
-        $task = Task::create([
-            'project_id' => $project->id,
-            'name' => 'Test Task',
-            'status' => 'pending',
-            'assigned_to' => $user->id,
-            'due_date' => now()->addDays(7),
-        ]);
+        // $task = Task::create([
+        //     'project_id' => $project->id,
+        //     'name' => 'Test Task',
+        //     'status' => 'pending',
+        //     'assigned_to' => $user->id,
+        //     'due_date' => now()->addDays(7),
+        // ]);
 
         // Verify Relationships
-        echo "User Projects Count: " . $user->projects->count() . "\n";
-        echo "User Joined Projects Count: " . $user->joinedProjects->count() . "\n";
-        echo "Project Tasks Count: " . $project->tasks->count() . "\n";
-        echo "Task Assignee: " . $task->assignee->name . "\n";
     }
 }

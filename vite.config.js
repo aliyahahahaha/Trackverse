@@ -10,4 +10,10 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    esbuild: {
+        logOverride: { 'css-syntax-error': 'silent' },
+    },
+    build: {
+        target: 'esnext',
+    },
 });

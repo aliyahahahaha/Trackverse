@@ -29,7 +29,15 @@ window.themeManager = {
             resolvedTheme = prefersDark ? 'dark' : 'light';
         }
 
-        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        const root = document.documentElement;
+        root.setAttribute('data-theme', resolvedTheme);
+        root.style.colorScheme = resolvedTheme;
+
+        if (resolvedTheme === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
     },
 
     // Listen for OS color scheme changes
@@ -70,6 +78,3 @@ window.themeManager = {
 document.addEventListener('DOMContentLoaded', () => {
     window.themeManager.init();
 });
-
-// Expose globally for inline scripts if needed
-window.setTheme = (theme) => window.themeManager.setTheme(theme);

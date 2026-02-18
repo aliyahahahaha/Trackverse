@@ -9,8 +9,8 @@
                         <span class="icon-[tabler--ticket] size-6"></span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-base-content">Submit New Ticket</h3>
-                        <p class="text-[10px] uppercase font-black tracking-widest text-base-content/40">Report an issue
+                        <h3 class="text-xl font-bold text-base-content">Submit New Ticket</h3>
+                        <p class="text-[10px] uppercase font-bold tracking-widest text-base-content/40">Report an issue
                             or
                             request support</p>
                     </div>
@@ -46,7 +46,7 @@
                         <div
                             class="bg-base-200/30 rounded-xl p-2.5 mt-2 flex items-center justify-between border border-base-content/5">
                             <span
-                                class="text-[9px] font-black uppercase text-base-content/40 pl-1 tracking-widest">Emergency
+                                class="text-[9px] font-bold uppercase text-base-content/40 pl-1 tracking-widest">Emergency
                                 Escalation?</span>
                             <input type="checkbox" id="modal_escalate" class="switch switch-primary switch-sm"
                                 onchange="toggleModalEscalation()" />
@@ -58,7 +58,7 @@
                 <div class="form-control mb-5">
                     <label class="label pb-1.5 pt-0">
                         <span
-                            class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                            class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                             <span class="icon-[tabler--edit-circle] size-3.5"></span>
                             ISSUE TITLE
                         </span>
@@ -72,7 +72,7 @@
                 <div class="form-control mb-6">
                     <label class="label pb-1.5 pt-0">
                         <span
-                            class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                            class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                             <span class="icon-[tabler--align-left] size-3.5"></span>
                             DETAILED DESCRIPTION
                         </span>
@@ -114,7 +114,7 @@
                 <div class="form-control mb-8">
                     <label class="label pb-1.5 pt-0">
                         <span
-                            class="text-[10px] uppercase font-black tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
+                            class="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5 ml-1">
                             <span class="icon-[tabler--paperclip] size-3.5"></span>
                             ATTACH EVIDENCE (OPTIONAL)
                         </span>
@@ -124,7 +124,7 @@
                         <div class="flex flex-col items-center justify-center py-4">
                             <span
                                 class="icon-[tabler--cloud-upload] size-7 text-base-content/20 group-hover/upload:text-primary transition-colors mb-2"></span>
-                            <p class="text-[10px] font-black uppercase text-base-content/40 tracking-widest">Select
+                            <p class="text-[10px] font-bold uppercase text-base-content/40 tracking-widest">Select
                                 files
                                 for upload</p>
                             <p class="text-[9px] text-base-content/20 mt-1">Images, PDF, DOC (Max 10MB)</p>
@@ -135,10 +135,10 @@
 
                 <div class="pt-6 flex items-center justify-end gap-3 border-t border-base-content/5">
                     <button type="button"
-                        class="btn btn-ghost font-black uppercase tracking-widest text-[10px] rounded-xl px-6"
+                        class="btn btn-ghost font-bold uppercase tracking-widest text-[10px] rounded-xl px-6"
                         data-overlay="#ticket-create-modal">Discard</button>
                     <button type="submit"
-                        class="btn btn-primary px-10 rounded-xl font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+                        class="btn btn-primary px-10 rounded-xl font-bold uppercase tracking-widest shadow-lg shadow-primary/20">
                         <span class="icon-[tabler--send] size-4"></span>
                         Launch Ticket
                     </button>
@@ -167,29 +167,28 @@
         const usersSource = escalateCheckbox.checked ? (window.allSystemUsers || []) : members;
 
         usersSource.forEach(user => {
-            const availability = user.today_availability;
-            const status = availability ? availability.status : 'present';
+            const status = (user.current_status || 'available').toLowerCase();
 
-            if (!escalateCheckbox.checked && status !== 'present') {
+            if (!escalateCheckbox.checked && status !== 'available') {
                 return;
             }
 
             const option = document.createElement('option');
             option.value = user.id;
 
+            let statusLabel = 'AVAILABLE';
+            if (status === 'on_leave' || status === 'away') statusLabel = 'ON LEAVE';
+            else if (status === 'busy') statusLabel = 'BUSY';
+            else if (status === 'available') statusLabel = 'AVAILABLE';
+
             // Add data-select-option for premium look
             const avatar = user.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
             option.setAttribute('data-select-option', JSON.stringify({
-                description: user.email,
-                icon: `<img class=\"w-full h-full object-cover\" src=\"${avatar}\" />`
+                description: `${statusLabel} • ${user.email}`,
+                icon: `<img class="w-full h-full object-cover" src="${avatar}" />`
             }));
 
-            let statusLabel = '';
-            if (status === 'medical_leave') statusLabel = ' (Leave)';
-            else if (status === 'vacation') statusLabel = ' (Vacation)';
-            else if (status === 'present') statusLabel = ' (Available)';
-
-            option.text = user.name + statusLabel;
+            option.text = user.name + ` (${statusLabel})`;
             memberSelect.appendChild(option);
         });
 

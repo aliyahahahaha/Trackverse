@@ -33,7 +33,7 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return $user->id === $project->created_by || $project->members->contains($user->id);
+        return $user->isDirector() || $user->id === $project->created_by || $project->members->contains($user->id);
     }
 
     /**

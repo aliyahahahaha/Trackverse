@@ -18,7 +18,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDirector()) {
             $tasks = Task::with(['project', 'assignee'])->latest()->paginate(10);
         } elseif ($user->isTeamLeader()) {
             $tasks = Task::with(['project', 'assignee'])
@@ -30,9 +30,7 @@ class TaskController extends Controller
                 ->paginate(10);
         } else {
             $tasks = Task::with(['project', 'assignee'])
-                ->whereHas('project', function ($q) use ($user) {
-                    $q->whereHas('members', fn($q) => $q->where('user_id', $user->id));
-                })
+                ->where('assigned_to', $user->id)
                 ->latest()
                 ->paginate(10);
         }
@@ -44,6 +42,9 @@ class TaskController extends Controller
      */
     public function create(Project $project)
     {
+        if (auth()->user()->isDirector() || !auth()->user()->hasPermission('create_tasks')) {
+            abort(403, 'You do not have permission to create tasks.');
+        }
         Gate::authorize('view', $project);
         $users = $project->members;
         return view('tasks.create', compact('project', 'users'));
@@ -54,10 +55,14 @@ class TaskController extends Controller
      */
     public function store(Request $request, Project $project)
     {
+        if (!auth()->user()->hasPermission('create_tasks')) {
+            abort(403, 'You do not have permission to create tasks.');
+        }
         Gate::authorize('view', $project);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'status' => 'required|string|in:pending,in_progress,completed',
             'assigned_to' => 'nullable|exists:users,id',
             'due_date' => 'nullable|date',
@@ -65,6 +70,7 @@ class TaskController extends Controller
 
         $task = new Task($validated);
         $task->project_id = $project->id;
+        $task->created_by = auth()->id();
         $task->save();
 
         if ($task->assigned_to && $task->assigned_to != auth()->id()) {
@@ -88,6 +94,19 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        $user = auth()->user();
+
+        if (!$user->isAdmin() && !$user->isDirector()) {
+            if (!$user->hasPermission('edit_tasks') && !$user->hasPermission('update_task_status')) {
+                abort(403, 'You do not have permission to edit this task.');
+            }
+
+            // If they only have status update permission, they must be the assignee
+            if (!$user->hasPermission('edit_tasks') && $task->assigned_to !== $user->id) {
+                abort(403, 'You can only update the status of tasks assigned to you.');
+            }
+        }
+
         Gate::authorize('view', $task->project);
         $users = $task->project->members;
         return view('tasks.edit', compact('task', 'users'));
@@ -99,19 +118,60 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         Gate::authorize('view', $task->project);
+        $user = auth()->user();
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'required|string|in:pending,in_progress,completed',
-            'assigned_to' => 'nullable|exists:users,id',
-            'due_date' => 'nullable|date',
-        ]);
+        $oldStatus = $task->status;
 
-        $originalAssignee = $task->assigned_to;
-        $task->update($validated);
+        if ($user->hasPermission('edit_tasks')) {
+            // Full update allowed
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'status' => 'required|string|in:pending,in_progress,completed',
+                'assigned_to' => 'nullable|exists:users,id',
+                'due_date' => 'nullable|date',
+            ]);
 
-        if ($task->assigned_to && $task->assigned_to != $originalAssignee && $task->assigned_to != auth()->id()) {
-            User::find($task->assigned_to)?->notify(new \App\Notifications\TaskAssigned($task));
+            $originalAssignee = $task->assigned_to;
+            $task->update($validated);
+
+            if ($task->assigned_to && $task->assigned_to != $originalAssignee && $task->assigned_to != auth()->id()) {
+                User::find($task->assigned_to)?->notify(new \App\Notifications\TaskAssigned($task));
+            }
+        } elseif ($user->hasPermission('update_task_status')) {
+            // Check if they are the assignee
+            if ($task->assigned_to !== $user->id) {
+                abort(403, 'You can only update the status of tasks assigned to you.');
+            }
+
+            // Only update status
+            $validated = $request->validate([
+                'status' => 'required|string|in:pending,in_progress,completed',
+            ]);
+            $task->update(['status' => $validated['status']]);
+        } else {
+            abort(403, 'You do not have permission to update this task.');
+        }
+
+        // Send notifications if task is completed
+        if ($task->status === 'completed' && $oldStatus !== 'completed') {
+            $recipients = collect();
+
+            // Add the person who assigned the task
+            if ($task->created_by && $task->created_by != auth()->id()) {
+                $recipients->push(User::find($task->created_by));
+            }
+
+            // Add Admins and Directors
+            $adminsAndDirectors = User::whereIn('role', [User::ROLE_ADMIN, User::ROLE_DIRECTOR])
+                ->where('id', '!=', auth()->id())
+                ->get();
+
+            $recipients = $recipients->merge($adminsAndDirectors)->unique('id')->filter();
+
+            foreach ($recipients as $recipient) {
+                $recipient->notify(new \App\Notifications\TaskCompleted($task, auth()->user()));
+            }
         }
 
         return redirect()->route('projects.show', $task->project)->with('success', 'Task updated successfully.');
@@ -122,7 +182,10 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        Gate::authorize('view', $task->project); // Assuming project members can delete tasks for now, or restrict to creator/admin
+        if (!auth()->user()->hasPermission('delete_tasks')) {
+            abort(403, 'You do not have permission to delete tasks.');
+        }
+        Gate::authorize('view', $task->project);
         $project = $task->project;
         $task->delete();
 

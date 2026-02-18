@@ -21,21 +21,21 @@ class MemberAvailabilitySeeder extends Seeder
         if ($admin) {
             \App\Models\MemberAvailability::updateOrCreate(
                 ['user_id' => $admin->id, 'date' => $today],
-                ['status' => 'present']
+                ['status' => 'available']
             );
         }
 
         if ($leader) {
             \App\Models\MemberAvailability::updateOrCreate(
                 ['user_id' => $leader->id, 'date' => $today],
-                ['status' => 'medical_leave']
+                ['status' => 'on_leave']
             );
         }
 
         if ($user) {
             \App\Models\MemberAvailability::updateOrCreate(
                 ['user_id' => $user->id, 'date' => $today],
-                ['status' => 'vacation']
+                ['status' => 'busy']
             );
         }
     }

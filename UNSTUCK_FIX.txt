@@ -1,0 +1,57 @@
+=====================================================
+EMERGENCY FIX FOR STUCK MODAL ISSUE
+=====================================================
+
+If your page is stuck after closing a modal, follow these steps:
+
+METHOD 1: Clear Browser Cache (RECOMMENDED)
+-------------------------------------------
+1. Press Ctrl + Shift + Delete
+2. Select "Cached images and files"
+3. Click "Clear data"
+4. Refresh the page (Ctrl + F5)
+
+METHOD 2: Run This in Browser Console (IMMEDIATE FIX)
+-----------------------------------------------------
+1. Press F12 to open Developer Tools
+2. Click the "Console" tab
+3. Copy and paste this code:
+
+// Force unstick the page
+document.querySelectorAll('.modal').forEach(m => {
+  m.classList.remove('open');
+  m.classList.add('hidden');
+  m.removeAttribute('open');
+  m.style.display = 'none';
+  m.style.opacity = '0';
+  m.style.visibility = 'hidden';
+  m.style.pointerEvents = 'none';
+});
+
+const container = document.querySelector('.overflow-y-auto.custom-scrollbar');
+if (container) {
+  container.style.overflow = '';
+  container.style.overflowY = 'auto';
+}
+
+document.body.style.overflow = '';
+document.documentElement.style.overflow = '';
+
+console.log('✅ Page unstuck! You can now scroll.');
+
+4. Press Enter
+5. The page should now be unstuck!
+
+METHOD 3: Hard Refresh
+----------------------
+1. Press Ctrl + Shift + R (Windows/Linux)
+   OR Cmd + Shift + R (Mac)
+2. This will force reload without cache
+
+WHY IS THIS HAPPENING?
+----------------------
+Your browser is loading an old cached version of the JavaScript file.
+The fix has been applied to the server, but your browser needs to
+download the new version.
+
+After using any of these methods, the modal should work correctly!

@@ -30,7 +30,7 @@
         <div class="flex items-center justify-center">
           <a href="{{ route('login') }}" class="flex flex-col items-center gap-2">
             <img src="{{ asset('trackverse.png') }}" alt="TrackVerse Logo" class="h-16 w-auto object-contain">
-            <h2 class="text-base-content text-2xl font-black tracking-tighter uppercase italic">TrackVerse
+            <h2 class="text-base-content text-2xl font-bold tracking-tighter uppercase italic">TrackVerse
             </h2>
           </a>
         </div>

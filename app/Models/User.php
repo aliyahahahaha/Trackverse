@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\HasDatabaseNotifications;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -15,7 +16,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, InteractsWithMedia, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, HasDatabaseNotifications, InteractsWithMedia, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -37,9 +38,22 @@ class User extends Authenticatable implements HasMedia
      */
     protected $appends = [
         'profile_photo_url',
+        'current_status',
+        'role_label',
     ];
 
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->role) {
+            self::ROLE_ADMIN => 'Admin',
+            self::ROLE_DIRECTOR => 'Director',
+            self::ROLE_TEAM_LEADER => 'Team Leader',
+            default => 'User',
+        };
+    }
+
     const ROLE_ADMIN = 'admin';
+    const ROLE_DIRECTOR = 'director';
     const ROLE_TEAM_LEADER = 'team_leader';
     const ROLE_USER = 'user';
 
@@ -51,6 +65,11 @@ class User extends Authenticatable implements HasMedia
     public function isTeamLeader(): bool
     {
         return $this->role === self::ROLE_TEAM_LEADER;
+    }
+
+    public function isDirector(): bool
+    {
+        return $this->role === self::ROLE_DIRECTOR;
     }
 
     public function isUser(): bool
@@ -132,5 +151,21 @@ class User extends Authenticatable implements HasMedia
         }
 
         return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=random";
+    }
+    public function hasPermission(string $permission): bool
+    {
+        // Admins can do everything (optional override, or rely on DB)
+        if ($this->role === self::ROLE_ADMIN) {
+            return true;
+        }
+
+        return RolePermission::where('role', $this->role)
+            ->where('permission', $permission)
+            ->exists();
+    }
+
+    public function getCurrentStatusAttribute(): string
+    {
+        return $this->todayAvailability?->status ?? 'available';
     }
 }

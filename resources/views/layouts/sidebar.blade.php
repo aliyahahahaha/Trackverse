@@ -4,94 +4,93 @@
     aria-label="Sidebar" tabindex="-1">
     <div id="layout-sidebar-content" class="h-full flex flex-col bg-base-100 overflow-hidden">
         <!-- Close Button (Mobile) -->
-        <button type="button" class="btn btn-ghost btn-circle btn-sm absolute end-4 top-4 lg:hidden z-50"
-            aria-label="Close" data-overlay="#layout-sidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 6l-12 12" />
-                <path d="M6 6l12 12" />
-            </svg>
-        </button>
+        <!-- Close Button (Mobile) Removed -->
 
         <!-- Branding Section - Enlarged -->
         <div class="px-6 py-6 flex-shrink-0 border-b border-base-content/5">
-            <div class="flex items-center gap-4">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-4 group cursor-pointer">
                 <div
                     class="size-11 bg-primary/10 rounded-[14px] flex items-center justify-center border border-primary/10 shadow-sm transition-transform hover:scale-105 duration-300">
                     <img src="{{ asset('trackverse.png') }}" alt="Logo" class="size-7 object-contain">
                 </div>
                 <div class="flex flex-col">
                     <h2
-                        class="text-base-content text-xl font-black tracking-tighter uppercase italic leading-none group cursor-default">
+                        class="text-base-content text-xl font-bold tracking-tighter uppercase italic leading-none group-hover:text-primary transition-colors">
                         Track<span class="text-primary italic animate-pulse">Verse</span>
                     </h2>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Management
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Management
                         Hub</span>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Navigation items -->
         <div class="flex-1 overflow-y-auto px-3 py-3 custom-scrollbar">
             <ul class="menu menu-xs p-0 gap-0.5 pb-2">
                 <!-- Group: CORE SERVICES -->
-                <li class="px-2 pt-1 pb-0.5">
-                    <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Core Services</span>
+                <li class="px-2 mb-2">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Core Services</span>
                 </li>
 
                 <!-- Dashboard -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('dashboard') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('dashboard'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('dashboard')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('dashboard'),
+                        'text-slate-500 hover:bg-base-content/5 hover:text-primary font-bold' => !request()->routeIs('dashboard')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('dashboard'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('dashboard')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('dashboard'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('dashboard')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h6v6h-6z" />
-                                <path d="M14 4h6v6h-6z" />
-                                <path d="M4 14h6v6h-6z" />
-                                <path d="M14 14h6v6h-6z" />
+                                <rect width="7" height="7" x="3" y="3" rx="1" />
+                                <rect width="7" height="7" x="14" y="3" rx="1" />
+                                <rect width="7" height="7" x="14" y="14" rx="1" />
+                                <rect width="7" height="7" x="3" y="14" rx="1" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Dashboard</span>
-                        @if(request()->routeIs('dashboard'))
-                            <div class="absolute right-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
-                        @endif
+                        <span class="text-[11px] uppercase tracking-wide truncate">Dashboard</span>
                     </a>
                 </li>
 
                 <!-- Calendar -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('calendar.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('calendar.*'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('calendar.*')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('calendar.*'),
+                        'text-slate-500 hover:bg-base-content/5 hover:text-primary font-bold' => !request()->routeIs('calendar.*')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('calendar.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('calendar.*')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('calendar.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('calendar.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                                 <path d="M16 2v4M8 2v4M3 10h18" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Calendar</span>
-                        @if(request()->routeIs('calendar.*'))
-                            <div class="absolute right-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
-                        @endif
+                        <span class="text-[11px] uppercase tracking-wide truncate">Calendar</span>
                     </a>
                 </li>
 
                 <!-- Leaderboard -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('leaderboard.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('leaderboard.*'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('leaderboard.*')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('leaderboard.*'),
+                        'text-slate-500 hover:bg-base-content/5 hover:text-primary font-bold' => !request()->routeIs('leaderboard.*')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('leaderboard.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('leaderboard.*')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('leaderboard.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('leaderboard.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M6 9h6v6h-6z" />
                                 <path d="M18 9h-3v6h3z" />
@@ -99,131 +98,140 @@
                                 <path d="M12 15v6" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Leaderboard</span>
-                        @if(request()->routeIs('leaderboard.*'))
-                            <div class="absolute right-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
-                        @endif
+                        <span class="text-[11px] uppercase tracking-wide truncate">Leaderboard</span>
                     </a>
                 </li>
 
                 <!-- Announcements -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('announcements.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('announcements.*'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('announcements.*')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('announcements.*'),
+                        'text-slate-500 hover:bg-base-content/5 hover:text-primary font-bold' => !request()->routeIs('announcements.*')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('announcements.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('announcements.*')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('announcements.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('announcements.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path
                                     d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
-                                <path d="M8 8m0 0l4 0" />
-                                <path d="M8 12m0 0l4 0" />
-                                <path d="M8 16m0 0l4 0" />
+                                <path d="M8 8h4M8 12h4M8 16h4" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Announcements</span>
+                        <span class="text-[11px] uppercase tracking-wide truncate">Announcements</span>
                     </a>
                 </li>
 
                 <!-- Tasks -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('tasks.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('tasks.*'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('tasks.*')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('tasks.*'),
+                        'text-slate-500 hover:bg-base-content/5 hover:text-primary font-bold' => !request()->routeIs('tasks.*')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('tasks.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('tasks.*')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('tasks.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('tasks.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 11l3 3l8 -8" />
                                 <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Tasks</span>
+                        <span class="text-[11px] uppercase tracking-wide truncate">Tasks</span>
                     </a>
                 </li>
 
                 <!-- Group: WORKSPACE -->
                 <li class="px-2 pt-3 pb-0.5">
-                    <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Workspace</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Workspace</span>
                 </li>
 
-                <!-- Projects -->
-                <li class="p-0" x-data="{ open: {{ request()->routeIs('projects.*') ? 'true' : 'false' }} }">
-                    <div class="flex flex-col w-full p-0">
-                        <button @click="open = !open"
-                            class="flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group text-slate-500 hover:bg-primary/5 hover:text-primary font-bold"
-                            aria-haspopup="true" :aria-expanded="open">
-                            <div
-                                class="size-6 rounded-md bg-slate-100 group-hover:bg-primary/10 flex items-center justify-center mr-1 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" @class(['size-3.5', 'text-primary' => request()->routeIs('projects.*')]) viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path
-                                        d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
-                                    <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
-                                    <path d="M12 12l0 .01" />
-                                    <path d="M3 13a20 20 0 0 0 18 0" />
-                                </svg>
-                            </div>
-                            <span @class(['grow ml-2 text-left text-[10px] uppercase tracking-wider', 'text-primary' => request()->routeIs('projects.*')])>Projects</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3 transition-transform duration-300"
-                                :class="{ 'rotate-180': open }" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 9l6 6l6 -6" />
+                <!-- Projects (Expandable) -->
+                <li x-data="{ open: {{ request()->routeIs('projects.*') ? 'true' : 'false' }} }">
+                    <button @click="open = !open"
+                        class="flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group text-base-content/60 hover:bg-base-content/5 hover:text-base-content font-bold mb-0.5"
+                        aria-haspopup="true" :aria-expanded="open">
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary/10 text-primary' => request()->routeIs('projects.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10 text-base-content/40' => !request()->routeIs('projects.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                <path d="M3 13a20 20 0 0 0 18 0" />
                             </svg>
-                        </button>
-                        <ul x-show="open" x-cloak x-collapse
-                            class="mt-0.5 space-y-0.5 ml-4 pl-4 border-l-2 border-slate-100">
-                            <li>
-                                <a href="{{ route('projects.index') }}" @class(['flex items-center px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all group/sub', 'text-primary bg-primary/5 shadow-sm' => request()->routeIs('projects.index'), 'text-slate-400 hover:text-primary hover:bg-primary/5' => !request()->routeIs('projects.index')])>
-                                    All Projects
+                        </div>
+                        <span @class(['grow text-left text-[11px] uppercase tracking-wider truncate', 'text-primary' => request()->routeIs('projects.*')])>Projects</span>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="size-3.5 transition-transform duration-200 opacity-40 group-hover:opacity-100"
+                            :class="{ 'rotate-180': open }" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6l6 -6" />
+                        </svg>
+                    </button>
+                    <ul x-show="open" x-cloak x-collapse
+                        class="w-full p-0 flex flex-col pl-[3.5rem] space-y-0.5 mb-2 border-l border-base-content/10 ml-[1.65rem]">
+                        <li class="w-full">
+                            <a href="{{ route('projects.index') }}" @class(['block w-full h-8 flex items-center text-[9px] font-bold uppercase tracking-widest transition-all', 'text-primary' => request()->routeIs('projects.index'), 'text-base-content/40 hover:text-primary' => !request()->routeIs('projects.index')])>
+                                All Projects
+                            </a>
+                        </li>
+                        @can('create', App\Models\Project::class)
+                            <li class="w-full">
+                                <a href="{{ route('projects.create') }}" @class(['block w-full h-8 flex items-center text-[9px] font-bold uppercase tracking-widest transition-all', 'text-primary' => request()->routeIs('projects.create'), 'text-base-content/40 hover:text-primary' => !request()->routeIs('projects.create')])>
+                                    Create New
                                 </a>
                             </li>
-                            @can('create', App\Models\Project::class)
-                                <li>
-                                    <a href="{{ route('projects.create') }}" @class(['flex items-center px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all group/sub', 'text-primary bg-primary/5 shadow-sm' => request()->routeIs('projects.create'), 'text-slate-400 hover:text-primary hover:bg-primary/5' => !request()->routeIs('projects.create')])>
-                                        Create New
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </div>
+                        @endcan
+                    </ul>
                 </li>
 
                 <!-- Tickets -->
-                <li>
+                <li class="w-full">
                     <a href="{{ route('tickets.index') }}" @class([
-                        'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('tickets.*'),
-                        'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('tickets.*')
+                        'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                        'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('tickets.*'),
+                        'text-base-content/60 hover:bg-base-content/5 hover:text-base-content font-bold' => !request()->routeIs('tickets.*')
                     ])>
-                        <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('tickets.*'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('tickets.*')])>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                        <div @class([
+                            'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                            'bg-primary-content/20' => request()->routeIs('tickets.*'),
+                            'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('tickets.*')
+                        ])>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M15 5l0 2" />
-                                <path d="M15 11l0 2" />
-                                <path d="M15 17l0 2" />
+                                <path d="M15 5v2m0 4v2m0 4v2" />
                                 <path
                                     d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
                             </svg>
                         </div>
-                        <span class="ml-2 text-[10px] uppercase tracking-wider">Tickets</span>
+                        <span class="text-[11px] uppercase tracking-wider truncate">Tickets</span>
                     </a>
                 </li>
 
                 @if(auth()->user()->isAdmin())
                     <!-- Team Members -->
-                    <li>
+                    <li class="w-full">
                         <a href="{{ route('users.index') }}" @class([
-                            'flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group relative overflow-hidden',
-                            'bg-primary text-primary-content font-bold shadow-md shadow-primary/20 scale-[1.01]' => request()->routeIs('users.index'),
-                            'text-slate-500 hover:bg-primary/5 hover:text-primary font-bold' => !request()->routeIs('users.index')
+                            'flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group',
+                            'bg-primary text-primary-content font-bold shadow-md shadow-primary/20' => request()->routeIs('users.index'),
+                            'text-base-content/60 hover:bg-base-content/5 hover:text-base-content font-bold' => !request()->routeIs('users.index')
                         ])>
-                            <div @class(['size-6 rounded-md flex items-center justify-center mr-1 transition-colors', 'bg-primary-content/20' => request()->routeIs('users.index'), 'bg-slate-100 group-hover:bg-primary/10' => !request()->routeIs('users.index')])>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
+                            <div @class([
+                                'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                                'bg-primary-content/20' => request()->routeIs('users.index'),
+                                'bg-base-200/80 group-hover:bg-primary/10' => !request()->routeIs('users.index')
+                            ])>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
                                     <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -231,54 +239,55 @@
                                     <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                                 </svg>
                             </div>
-                            <span class="ml-2 text-[10px] uppercase tracking-wider">Team Members</span>
+                            <span class="text-[11px] uppercase tracking-wider truncate">Team Members</span>
                         </a>
                     </li>
                 @endif
 
                 <!-- Administration -->
                 @if(auth()->user()->isAdmin())
-                    <li class="px-2 pt-3 pb-0.5">
-                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Administration</span>
+                    <li class="px-2 mt-6 mb-2">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Administration</span>
                     </li>
 
-                    <li class="p-0"
+                    <li
                         x-data="{ open: {{ (request()->routeIs('users.*') || request()->routeIs('permissions.*')) ? 'true' : 'false' }} }">
-                        <div class="flex flex-col w-full p-0">
-                            <button @click="open = !open"
-                                class="flex w-full items-center px-3 py-2 rounded-lg transition-all duration-300 group text-slate-500 hover:bg-primary/5 hover:text-primary font-bold"
-                                aria-haspopup="true" :aria-expanded="open">
-                                <div
-                                    class="size-6 rounded-md bg-slate-100 group-hover:bg-primary/10 flex items-center justify-center mr-1 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" @class(['size-3.5', 'text-primary' => (request()->routeIs('users.*') || request()->routeIs('permissions.*'))])
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37a1.724 1.724 0 0 0 2.572 -1.065" />
-                                        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                    </svg>
-                                </div>
-                                <span @class(['grow ml-2 text-left text-[10px] uppercase tracking-wider', 'text-primary' => (request()->routeIs('users.*') || request()->routeIs('permissions.*'))])>Management</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 transition-transform duration-300"
-                                    :class="{ 'rotate-180': open }" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M6 9l6 6l6 -6" />
+                        <button @click="open = !open"
+                            class="flex w-full items-center px-3 h-10 rounded-lg transition-all duration-200 group text-base-content/60 hover:bg-base-content/5 hover:text-base-content font-bold mb-0.5"
+                            aria-haspopup="true" :aria-expanded="open">
+                            <div @class([
+                                'flex items-center justify-center size-7 rounded-lg shrink-0 transition-colors mr-3',
+                                'bg-primary/10 text-primary' => (request()->routeIs('users.*') || request()->routeIs('permissions.*')),
+                                'bg-base-200/80 group-hover:bg-primary/10 text-base-content/40' => !(request()->routeIs('users.*') || request()->routeIs('permissions.*'))
+                            ])>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37a1.724 1.724 0 0 0 2.572 -1.065" />
+                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                                 </svg>
-                            </button>
-                            <ul x-show="open" x-cloak x-collapse
-                                class="mt-0.5 space-y-0.5 ml-4 pl-4 border-l-2 border-slate-100">
-                                <li>
-                                    <a href="{{ route('users.index') }}" @class(['flex items-center px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all group/sub', 'text-primary bg-primary/5 shadow-sm' => request()->routeIs('users.index'), 'text-slate-400 hover:text-primary hover:bg-primary/5' => !request()->routeIs('users.index')])>
-                                        User Directory
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('permissions.index') }}" @class(['flex items-center px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all group/sub', 'text-primary bg-primary/5 shadow-sm' => request()->routeIs('permissions.*'), 'text-slate-400 hover:text-primary hover:bg-primary/5' => !request()->routeIs('permissions.*')])>
-                                        Permissions
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                            </div>
+                            <span @class(['grow text-left text-[11px] uppercase tracking-wider truncate', 'text-primary' => (request()->routeIs('users.*') || request()->routeIs('permissions.*'))])>Management</span>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="size-3.5 transition-transform duration-300 opacity-40 group-hover:opacity-100"
+                                :class="{ 'rotate-180': open }" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9l6 6l6 -6" />
+                            </svg>
+                        </button>
+                        <ul x-show="open" x-cloak x-collapse
+                            class="w-full p-0 flex flex-col pl-[3.5rem] space-y-0.5 mb-2 border-l border-base-content/10 ml-[1.65rem]">
+                            <li class="w-full">
+                                <a href="{{ route('users.index') }}" @class(['block w-full h-8 flex items-center text-[9px] font-bold uppercase tracking-widest transition-all', 'text-primary' => request()->routeIs('users.index'), 'text-base-content/40 hover:text-primary' => !request()->routeIs('users.index')])>
+                                    User Directory
+                                </a>
+                            </li>
+                            <li class="w-full">
+                                <a href="{{ route('permissions.index') }}" @class(['block w-full h-8 flex items-center text-[9px] font-bold uppercase tracking-widest transition-all', 'text-primary' => request()->routeIs('permissions.index'), 'text-base-content/40 hover:text-primary' => !request()->routeIs('permissions.index')])>
+                                    Permissions
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 @endif
             </ul>
@@ -291,8 +300,16 @@
                 <div class="relative inline-block">
                     <img class="size-9 rounded-lg object-cover border border-base-content/10"
                         src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}" />
+                    @php
+                        $curStatus = auth()->user()->todayAvailability?->status ?? 'available';
+                        $statusDot = match ($curStatus) {
+                            'busy' => 'bg-error',
+                            'on_leave' => 'bg-warning',
+                            default => 'bg-success',
+                        };
+                    @endphp
                     <span
-                        class="absolute bottom-0 right-0 block size-2.5 rounded-full bg-success ring-2 ring-white transform translate-x-1/4 translate-y-1/4"></span>
+                        class="absolute bottom-0 right-0 block size-2.5 rounded-full {{ $statusDot }} ring-2 ring-white transform translate-x-1/4 translate-y-1/4"></span>
                 </div>
                 <div class="flex flex-col min-w-0 grow gap-0.5">
                     <h6
@@ -300,7 +317,7 @@
                         {{ auth()->user()->name }}
                     </h6>
                     <span class="text-[10px] font-semibold text-base-content/50 uppercase tracking-wider truncate">
-                        {{ auth()->user()->role ?? 'User' }}
+                        {{ auth()->user()->role_label }}
                     </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">

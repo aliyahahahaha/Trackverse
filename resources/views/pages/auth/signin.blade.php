@@ -46,8 +46,8 @@
                             class="w-full h-[46px] bg-slate-50 border border-slate-200 rounded-lg px-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all outline-none"
                             required>
                         <button type="button" onclick="togglePassword()"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                            <span class="icon-[tabler--eye] size-5" id="eyeIcon"></span>
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+                            <span id="eyeIcon" class="icon-[tabler--eye] size-5"></span>
                         </button>
                         @error('password')
                             <span class="text-red-500 text-xs mt-1.5 font-bold ml-1">{{ $message }}</span>
@@ -135,15 +135,16 @@
     <script>
         function togglePassword() {
             const input = document.getElementById('passwordInput');
-            const icon = document.getElementById('eyeIcon');
+            const eyeIcon = document.getElementById('eyeIcon');
+
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('icon-[tabler--eye]');
-                icon.classList.add('icon-[tabler--eye-off]');
+                eyeIcon.classList.remove('icon-[tabler--eye]');
+                eyeIcon.classList.add('icon-[tabler--eye-off]');
             } else {
                 input.type = 'password';
-                icon.classList.remove('icon-[tabler--eye-off]');
-                icon.classList.add('icon-[tabler--eye]');
+                eyeIcon.classList.remove('icon-[tabler--eye-off]');
+                eyeIcon.classList.add('icon-[tabler--eye]');
             }
         }
     </script>

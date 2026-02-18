@@ -13,8 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Run PermissionSeeder first
+        $this->call(PermissionSeeder::class);
 
+        // Create default users
         User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@trackverse.com',
@@ -31,6 +33,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Regular User',
             'email' => 'user@trackverse.com',
             'role' => 'user',
+        ]);
+
+        // Run other seeders
+        $this->call([
+            MemberAvailabilitySeeder::class,
+            VerificationSeeder::class,
         ]);
     }
 }

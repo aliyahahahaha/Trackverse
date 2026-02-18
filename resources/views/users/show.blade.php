@@ -1,108 +1,91 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="space-y-6">
-            <!-- Top Navigation Row -->
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
                     <a href="{{ route('users.index') }}"
-                        class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                        <span
-                            class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">←
-                            BACK TO DIRECTORY</span>
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        USER LIST
                     </a>
-
-                    <div class="w-px h-4 bg-base-content/10"></div>
-
-                    <!-- Breadcrumbs -->
-                    <nav
-                        class="flex items-center text-[10px] font-black uppercase tracking-[0.15em] text-base-content/30">
-                        <ol class="flex items-center gap-2">
-                            <li><a href="{{ route('users.index') }}"
-                                    class="hover:text-base-content transition-colors">User
-                                    Management</a></li>
-                            <li class="opacity-30"><svg viewBox="0 0 24 24" class="size-2.5" fill="none"
-                                    stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M9 6l6 6l-6 6" />
-                                </svg></li>
-                            <li class="text-base-content/60">{{ $user->name }}</li>
-                        </ol>
-                    </nav>
-                </div>
-
-                <!-- Actions -->
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('users.edit', $user) }}"
-                        class="btn h-10 px-5 btn-warning text-white rounded-xl shadow-lg shadow-warning/20 transition-all gap-2 group border-none">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="size-4 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
-                            <path d="M13.5 6.5l4 4" />
-                        </svg>
-                        <span class="text-[10px] uppercase font-black tracking-widest">Edit Profile</span>
-                    </a>
-
-                    @if(auth()->id() !== $user->id && auth()->user()->isAdmin())
-                        <form action="{{ route('users.destroy', $user) }}" method="POST"
-                            onsubmit="return confirm('Are you sure you want to delete this user?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="btn h-10 px-5 btn-error text-white rounded-xl shadow-lg shadow-error/20 transition-all gap-2 group border-none">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="size-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M4 7l16 0" />
-                                    <path d="M10 11l0 6" />
-                                    <path d="M14 11l0 6" />
-                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                </svg>
-                                <span class="text-[10px] uppercase font-black tracking-widest">Delete</span>
-                            </button>
-                        </form>
-                    @endif
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <div
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        USER PROFILE
+                    </div>
                 </div>
             </div>
 
-            <!-- Profile Info Row -->
-            <div class="flex items-center gap-6">
-                <div class="relative group">
-                    <div
-                        class="size-24 rounded-[2rem] bg-primary/10 flex items-center justify-center text-primary shadow-sm border border-primary/5 ring-8 ring-primary/5 overflow-hidden">
-                        <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}"
-                            class="w-full h-full object-cover">
+            <!-- Profile Identity Hero -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mt-2">
+                <div class="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                    <!-- Profile Photo with Glow -->
+                    <div class="relative group shrink-0">
+                        <div class="absolute -inset-1 bg-gradient-to-tr from-primary to-secondary rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition-all duration-500"></div>
+                        <div class="relative size-32 rounded-[2.5rem] bg-base-100 flex items-center justify-center text-primary shadow-xl border border-base-content/5 ring-1 ring-base-content/5 overflow-hidden">
+                            @if($user->hasMedia('avatars'))
+                                <img src="{{ $user->getFirstMediaUrl('avatars') }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                            @elseif(!empty($user->profile_photo_path))
+                                <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                                    <span class="text-3xl font-black text-primary tracking-tighter">{{ collect(explode(' ', $user->name))->map(fn($n) => $n[0])->take(2)->join('') }}</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col md:flex-row items-center gap-3">
+                            <h1 class="text-4xl font-black text-base-content tracking-tight leading-none">
+                                {{ $user->name }}
+                            </h1>
+                            @if($user->isAdmin())
+                                <div class="inline-flex items-center justify-center px-3 h-6 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-primary/20">ADMIN</div>
+                            @elseif($user->isDirector())
+                                <div class="inline-flex items-center justify-center px-3 h-6 bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-slate-900/20">DIRECTOR</div>
+                            @elseif($user->isTeamLeader())
+                                <div class="inline-flex items-center justify-center px-3 h-6 bg-secondary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-secondary/20">LEADER</div>
+                            @else
+                                <div class="inline-flex items-center justify-center px-3 h-6 bg-base-content text-base-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-full opacity-60">USER</div>
+                            @endif
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-y-3 gap-x-6">
+                            <div class="flex items-center gap-2 text-sm font-bold text-base-content/40">
+                                <span class="icon-[tabler--mail] size-4 opacity-40"></span>
+                                {{ $user->email }}
+                            </div>
+                            <div class="flex items-center gap-2 text-sm font-bold text-base-content/40">
+                                <span class="icon-[tabler--calendar-event] size-4 opacity-40"></span>
+                                Joined {{ $user->created_at->format('M d, Y') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <div class="flex items-center gap-3 mb-1.5">
-                        <h2 class="font-black text-4xl text-base-content tracking-tight leading-none">
-                            {{ $user->name }}
-                        </h2>
-                        @if($user->isAdmin())
-                            <div
-                                class="badge bg-primary/10 text-primary border-none text-[9px] font-black uppercase tracking-widest h-5 px-2">
-                                ADMIN</div>
-                        @elseif($user->isTeamLeader())
-                            <div
-                                class="badge bg-secondary/10 text-secondary border-none text-[9px] font-black uppercase tracking-widest h-5 px-2">
-                                TEAM LEADER</div>
-                        @else
-                            <div
-                                class="badge bg-base-content/10 text-base-content/60 border-none text-[9px] font-black uppercase tracking-widest h-5 px-2">
-                                USER</div>
-                        @endif
-                    </div>
-                    <p class="text-xs font-bold text-base-content/30 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 7l9 6l9 -6" />
-                            <path d="M3 7l0 10a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-10" />
-                        </svg>
-                        {{ $user->email }}
-                    </p>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-center lg:justify-end gap-3 shrink-0">
+                    <a href="{{ route('users.edit', $user) }}"
+                        class="btn btn-lg h-14 px-8 btn-warning text-white rounded-[1.25rem] shadow-xl shadow-warning/20 transition-all gap-3 group border-none">
+                        <span class="icon-[tabler--pencil] size-5 group-hover:rotate-12 transition-transform"></span>
+                        <span class="text-[11px] uppercase font-black tracking-widest">Edit Profile</span>
+                    </a>
+
+                    @if(auth()->id() !== $user->id && auth()->user()->isAdmin())
+                        <form action="{{ route('users.destroy', $user) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="btn btn-lg h-14 px-8 btn-error text-white rounded-[1.25rem] shadow-xl shadow-error/20 transition-all gap-3 group border-none"
+                                data-confirm="Are you sure you want to delete this user? This will permanently remove their profile and all associated data."
+                                data-confirm-title="Delete User" data-confirm-text="Yes, Delete User">
+                                <span class="icon-[tabler--trash] size-5 group-hover:scale-110 transition-transform"></span>
+                                <span class="text-[11px] uppercase font-black tracking-widest">Delete</span>
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -116,7 +99,7 @@
                     class="card bg-base-100 shadow-2xl shadow-base-content/[0.03] border border-base-content/5 rounded-[2rem] overflow-hidden">
                     <div class="card-body p-10 pt-8">
                         <h3
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 flex items-center gap-2.5 mb-10">
+                            class="text-[10px] font-bold uppercase tracking-widest text-base-content/30 flex items-center gap-2.5 mb-10">
                             <div class="size-1.5 bg-primary/40 rounded-full"></div>
                             Account Details
                         </h3>
@@ -124,30 +107,30 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div>
                                 <label
-                                    class="text-[9px] uppercase font-black tracking-[0.2em] text-base-content/20 block mb-2">FULL
+                                    class="text-[9px] uppercase font-bold tracking-widest text-base-content/20 block mb-2">FULL
                                     NAME</label>
                                 <div
-                                    class="text-sm font-black text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
+                                    class="text-sm font-bold text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
                                     {{ $user->name }}
                                 </div>
                             </div>
 
                             <div>
                                 <label
-                                    class="text-[9px] uppercase font-black tracking-[0.2em] text-base-content/20 block mb-2">EMAIL
+                                    class="text-[9px] uppercase font-bold tracking-widest text-base-content/20 block mb-2">EMAIL
                                     ADDRESS</label>
                                 <div
-                                    class="text-sm font-black text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
+                                    class="text-sm font-bold text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
                                     {{ $user->email }}
                                 </div>
                             </div>
 
                             <div>
                                 <label
-                                    class="text-[9px] uppercase font-black tracking-[0.2em] text-base-content/20 block mb-2">JOIN
+                                    class="text-[9px] uppercase font-bold tracking-widest text-base-content/20 block mb-2">JOIN
                                     DATE</label>
                                 <div
-                                    class="text-sm font-black text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5 flex items-center justify-between">
+                                    class="text-sm font-bold text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5 flex items-center justify-between">
                                     {{ $user->created_at->format('M d, Y') }}
                                     <span
                                         class="text-[9px] font-bold text-base-content/20">{{ $user->created_at->diffForHumans() }}</span>
@@ -156,11 +139,11 @@
 
                             <div>
                                 <label
-                                    class="text-[9px] uppercase font-black tracking-[0.2em] text-base-content/20 block mb-2">SYSTEM
+                                    class="text-[9px] uppercase font-bold tracking-widest text-base-content/20 block mb-2">SYSTEM
                                     ROLE</label>
                                 <div
-                                    class="text-sm font-black text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
-                                    {{ ucfirst(str_replace('_', ' ', $user->role)) }}
+                                    class="text-sm font-bold text-base-content bg-base-content/[0.02] p-4 rounded-xl border border-base-content/5">
+                                    {{ $user->role_label }}
                                 </div>
                             </div>
                         </div>
@@ -186,9 +169,9 @@
                                     </svg>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-[9px] font-black text-base-content/20 uppercase tracking-widest">
+                                    <div class="text-[9px] font-bold text-base-content/20 uppercase tracking-widest">
                                         TICKETS ASSIGNED</div>
-                                    <div class="text-3xl font-black text-base-content mt-1">
+                                    <div class="text-2xl font-bold text-base-content mt-1">
                                         {{ $user->assignedTickets ? $user->assignedTickets->count() : 0 }}
                                     </div>
                                 </div>
@@ -213,9 +196,9 @@
                                     </svg>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-[9px] font-black text-base-content/20 uppercase tracking-widest">
+                                    <div class="text-[9px] font-bold text-base-content/20 uppercase tracking-widest">
                                         ACTIVE PROJECTS</div>
-                                    <div class="text-3xl font-black text-base-content mt-1">
+                                    <div class="text-2xl font-bold text-base-content mt-1">
                                         {{ $user->projects ? $user->projects->count() : 0 }}
                                     </div>
                                 </div>
@@ -234,7 +217,7 @@
                     class="card bg-base-100 shadow-2xl shadow-base-content/[0.02] border border-base-content/5 rounded-[2rem] overflow-hidden">
                     <div class="card-body p-8">
                         <h3
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 flex items-center gap-2.5 mb-8">
+                            class="text-[10px] font-bold uppercase tracking-widest text-base-content/30 flex items-center gap-2.5 mb-8">
                             <div class="size-1.5 bg-success/40 rounded-full"></div>
                             Security & Access
                         </h3>
@@ -255,9 +238,9 @@
                                     </div>
                                     <div>
                                         <div
-                                            class="text-[10px] font-black uppercase tracking-widest text-success/60 mb-0.5">
+                                            class="text-[10px] font-bold uppercase tracking-widest text-success/60 mb-0.5">
                                             PASSWORD</div>
-                                        <div class="text-xs font-black text-success">SECURE</div>
+                                        <div class="text-xs font-bold text-success">SECURE</div>
                                     </div>
                                 </div>
                             </div>
@@ -276,9 +259,9 @@
                                     </div>
                                     <div>
                                         <div
-                                            class="text-[10px] font-black uppercase tracking-widest text-primary/60 mb-0.5">
+                                            class="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-0.5">
                                             STATUS</div>
-                                        <div class="text-xs font-black text-primary uppercase">ACTIVE</div>
+                                        <div class="text-xs font-bold text-primary uppercase">ACTIVE</div>
                                     </div>
                                 </div>
                             </div>

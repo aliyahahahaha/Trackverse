@@ -33,7 +33,7 @@ class TaskPolicy
      */
     public function view(User $user, Task $task): bool
     {
-        return $user->id === $task->project->created_by || $task->project->members->contains($user->id);
+        return $user->isDirector() || $user->id === $task->project->created_by || $task->project->members->contains($user->id);
     }
 
     /**
@@ -41,7 +41,7 @@ class TaskPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermission('create_tasks');
     }
 
     /**
@@ -49,7 +49,29 @@ class TaskPolicy
      */
     public function update(User $user, Task $task): bool
     {
-        return $user->id === $task->project->created_by || $task->project->members->contains($user->id);
+        // Must be a project member or owner
+        $isMember = $user->id === $task->project->created_by || $task->project->members->contains($user->id);
+
+        if (!$isMember) {
+            return false;
+        }
+
+        // Admins and Directors are handled by 'before' or explicitly match
+        if ($user->isAdmin() || $user->isDirector()) {
+            return true;
+        }
+
+        // If they have full edit permission (TLs/Admins)
+        if ($user->hasPermission('edit_tasks')) {
+            return true;
+        }
+
+        // If they only have status update permission, they must be the assignee
+        if ($user->hasPermission('update_task_status')) {
+            return $task->assigned_to === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -57,7 +79,7 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task): bool
     {
-        return $user->id === $task->project->created_by;
+        return $user->id === $task->project->created_by || $user->hasPermission('delete_tasks');
     }
 
     /**
@@ -65,7 +87,7 @@ class TaskPolicy
      */
     public function restore(User $user, Task $task): bool
     {
-        return $user->id === $task->project->created_by;
+        return $user->id === $task->project->created_by || $user->hasPermission('delete_tasks');
     }
 
     /**
@@ -73,6 +95,6 @@ class TaskPolicy
      */
     public function forceDelete(User $user, Task $task): bool
     {
-        return $user->id === $task->project->created_by;
+        return $user->id === $task->project->created_by || $user->hasPermission('delete_tasks');
     }
 }

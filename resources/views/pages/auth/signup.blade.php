@@ -59,8 +59,8 @@
                                 class="w-full h-[46px] bg-slate-50 border border-slate-200 rounded-lg px-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all outline-none"
                                 required>
                             <button type="button" onclick="togglePassword('passwordInput', 'eyeIcon')"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                                <span class="icon-[tabler--eye] size-5" id="eyeIcon"></span>
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+                                <span id="eyeIcon" class="icon-[tabler--eye] size-5"></span>
                             </button>
                             @error('password')
                                 <span class="text-red-500 text-xs mt-1.5 font-bold ml-1">{{ $message }}</span>
@@ -74,8 +74,8 @@
                                 class="w-full h-[46px] bg-slate-50 border border-slate-200 rounded-lg px-4 text-sm font-semibold text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all outline-none"
                                 required>
                             <button type="button" onclick="togglePassword('confirmPasswordInput', 'confirmEyeIcon')"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                                <span class="icon-[tabler--eye] size-5" id="confirmEyeIcon"></span>
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+                                <span id="confirmEyeIcon" class="icon-[tabler--eye] size-5"></span>
                             </button>
                         </div>
                     </div>
@@ -178,7 +178,8 @@
             <div
                 class="p-6 overflow-y-auto text-sm text-slate-600 space-y-4 leading-relaxed scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                 <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Last Updated:
-                    {{ date('F j, Y') }}</p>
+                    {{ date('F j, Y') }}
+                </p>
                 <p><strong>1. Introduction</strong><br>Welcome to TrackVerse. We value your privacy and are committed to
                     protecting your personal data. This policy outlines how we collect, use, and safeguard your information.
                 </p>
@@ -226,7 +227,8 @@
             <div
                 class="p-6 overflow-y-auto text-sm text-slate-600 space-y-4 leading-relaxed scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                 <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Last Updated:
-                    {{ date('F j, Y') }}</p>
+                    {{ date('F j, Y') }}
+                </p>
                 <p><strong>1. Acceptance of Terms</strong><br>By accessing and using TrackVerse, you agree to comply with
                     and be bound by these Terms and Conditions. If you do not agree, please do not use our services.</p>
                 <p><strong>2. User Accounts</strong><br>You are responsible for maintaining the confidentiality of your
@@ -254,17 +256,18 @@
     </div>
 
     <script>
-        function togglePassword(inputId, iconId) {
+        function togglePassword(inputId, eyeIconId) {
             const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
+            const eyeIcon = document.getElementById(eyeIconId);
+
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('icon-[tabler--eye]');
-                icon.classList.add('icon-[tabler--eye-off]');
+                eyeIcon.classList.remove('icon-[tabler--eye]');
+                eyeIcon.classList.add('icon-[tabler--eye-off]');
             } else {
                 input.type = 'password';
-                icon.classList.remove('icon-[tabler--eye-off]');
-                icon.classList.add('icon-[tabler--eye]');
+                eyeIcon.classList.remove('icon-[tabler--eye-off]');
+                eyeIcon.classList.add('icon-[tabler--eye]');
             }
         }
 

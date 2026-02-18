@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\NewAnnouncement;
 
 class AnnouncementController extends Controller
 {
@@ -23,7 +25,7 @@ class AnnouncementController extends Controller
      */
     public function create()
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
             abort(403);
         }
         return view('announcements.create');
@@ -34,7 +36,7 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
             abort(403);
         }
 
@@ -48,10 +50,37 @@ class AnnouncementController extends Controller
         $validated['user_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
-            $validated['image_path'] = $request->file('image')->store('announcements', 'public');
+            $file = $request->file('image');
+            if ($file->isValid()) {
+                $tempPath = $file->getPathname();
+                if ($tempPath && file_exists($tempPath)) {
+                    $name = $file->hashName();
+                    $stream = fopen($tempPath, 'r');
+                    if ($stream) {
+                        Storage::disk('public')->put('announcements/' . $name, $stream);
+                        fclose($stream);
+                        $validated['image_path'] = 'announcements/' . $name;
+                    }
+                }
+            }
         }
 
-        Announcement::create($validated);
+        // Remove the file object from validation data before database insertion
+        unset($validated['image']);
+
+        $announcement = Announcement::create($validated);
+
+        // Notify users: Admins and Directors only receive their own notifications, others receive all
+        $users = User::all()->filter(function ($user) use ($announcement) {
+            if ($user->isAdmin() || $user->isDirector()) {
+                return $user->id === $announcement->user_id;
+            }
+            return true;
+        });
+
+        foreach ($users as $user) {
+            $user->notify(new NewAnnouncement($announcement));
+        }
 
         return redirect()->route('announcements.index')->with('success', 'Announcement created successfully.');
     }
@@ -69,7 +98,7 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
             abort(403);
         }
         return view('announcements.edit', compact('announcement'));
@@ -80,7 +109,7 @@ class AnnouncementController extends Controller
      */
     public function update(Request $request, Announcement $announcement)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
             abort(403);
         }
 
@@ -109,7 +138,7 @@ class AnnouncementController extends Controller
      */
     public function destroy(Announcement $announcement)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->isDirector()) {
             abort(403);
         }
 

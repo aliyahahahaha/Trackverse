@@ -1,88 +1,92 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="space-y-6 pb-4">
-            <!-- Back Button & Breadcrumb Row -->
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('projects.show', $task->project) }}"
-                        class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                        <span
-                            class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">←
-                            BACK TO PROJECT</span>
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Breadcrumbs / Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
+                    <a href="{{ route('tasks.index') }}"
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        TASK HUB
                     </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <a href="{{ route('projects.show', $task->project) }}"
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        {{ strtoupper($task->project->name) }}
+                    </a>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <div
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        TASK REGISTRY
+                    </div>
                 </div>
-
-                <div class="h-4 w-px bg-base-content/20"></div>
-
-                <!-- Breadcrumb -->
-                <nav class="flex items-center text-[10px] font-black uppercase tracking-widest text-base-content/40">
-                    <ul class="flex items-center gap-2">
-                        <li><a href="{{ route('projects.index') }}"
-                                class="hover:text-primary transition-colors">Projects</a></li>
-                        <li class="flex items-center"><span class="mx-1 opacity-20">/</span></li>
-                        <li><a href="{{ route('projects.show', $task->project) }}"
-                                class="hover:text-primary transition-colors">{{ $task->project->name }}</a></li>
-                        <li class="flex items-center"><span class="mx-1 opacity-20">/</span></li>
-                        <li class="text-base-content/60">{{ $task->name }}</li>
-                    </ul>
-                </nav>
             </div>
 
-            <!-- Title & Actions Row -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-visible">
-                <div class="space-y-2">
-                    <div class="text-[10px] uppercase font-black tracking-[0.2em] text-base-content/30 ml-1">Task
-                        Details</div>
-                    <h2
-                        class="font-black text-3xl text-base-content tracking-tight leading-none flex items-center gap-3">
-                        <div
-                            class="size-11 bg-base-content/10 rounded-[1.25rem] flex items-center justify-center text-base-content shadow-sm border border-base-content/5 ring-4 ring-base-content/5 overflow-hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 11l3 3l8 -8" />
-                                <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
-                            </svg>
-                        </div>
-                        {{ $task->name }}
-                    </h2>
+            <!-- Main Header Content -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
+                    <div
+                        class="size-16 rounded-[1.5rem] bg-primary shadow-2xl shadow-primary/20 flex items-center justify-center text-primary-content shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3l8 -8" />
+                            <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">{{ $task->name }}
+                        </h1>
+                        <p class="text-[13px] text-base-content/50 font-bold">
+                            Assigned to {{ $task->assignee ? $task->assignee->name : 'Unassigned' }} • Deadline:
+                            {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No Date' }}
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-2">
-                    @can('update', $task)
-                        <!-- Edit Button -->
-                        <a href="{{ route('tasks.edit', $task) }}"
-                            class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content/70 border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 shadow-sm transition-all"
-                            title="Edit Task">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                <path d="M16 5l3 3" />
-                            </svg>
-                        </a>
-                    @endcan
-
-                    @can('delete', $task)
-                        <!-- Delete Button -->
-                        <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline"
-                            onsubmit="return confirm('Are you sure you want to delete this task?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="btn btn-square btn-sm h-9 w-9 rounded-xl bg-base-100 text-base-content/70 border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 shadow-sm transition-all"
-                                title="Delete Task">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 7l16 0" />
-                                    <path d="M10 11l0 6" />
-                                    <path d="M14 11l0 6" />
-                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                <div class="flex items-center gap-3">
+                    @if(!auth()->user()->isDirector())
+                        @can('update', $task)
+                            <a href="{{ route('tasks.edit', $task) }}"
+                                class="btn btn-square bg-base-100 text-base-content/70 border border-base-content/10 hover:border-warning hover:text-warning hover:bg-warning/5 size-12 rounded-xl shadow-sm transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+                                    <path d="M13.5 6.5l4 4" />
                                 </svg>
-                            </button>
-                        </form>
-                    @endcan
+                            </a>
+                        @endcan
+                    @endif
+                    @if(!auth()->user()->isDirector())
+                        @can('delete', $task)
+                            <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="btn btn-square bg-base-100 text-base-content/70 border border-base-content/10 hover:border-error hover:text-error hover:bg-error/5 size-12 rounded-xl shadow-sm transition-all"
+                                    data-confirm="Are you sure you want to delete this task? This action is permanent."
+                                    data-confirm-title="Delete Task" data-confirm-text="Yes, Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 7l16 0" />
+                                        <path d="M10 11l0 6" />
+                                        <path d="M14 11l0 6" />
+                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                    </svg>
+                                </button>
+                            </form>
+                        @endcan
+                    @endif
+                    <a href="{{ route('projects.show', $task->project) }}"
+                        class="btn btn-primary h-12 px-6 gap-2 font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl border-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12l14 0" />
+                            <path d="M5 12l6 6" />
+                            <path d="M5 12l6 -6" />
+                        </svg>
+                        Back to Project
+                    </a>
                 </div>
             </div>
         </div>
@@ -97,7 +101,7 @@
                     class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-3xl overflow-hidden">
                     <div class="card-body p-8">
                         <h3
-                            class="font-black text-sm uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
+                            class="font-bold text-sm uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path
@@ -121,7 +125,7 @@
                     class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-3xl overflow-hidden">
                     <div class="card-body p-8">
                         <h3
-                            class="font-black text-sm uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
+                            class="font-bold text-sm uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path
@@ -162,7 +166,7 @@
                     class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-3xl overflow-hidden">
                     <div class="card-body p-6">
                         <h3
-                            class="font-black text-xs uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
+                            class="font-bold text-xs uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -177,10 +181,10 @@
                             <div>
                                 <p class="text-[10px] font-bold text-base-content/30 uppercase tracking-widest mb-2">
                                     Status</p>
-                                <span
-                                    class="badge badge-lg bg-base-content text-base-100 font-black uppercase text-[10px] border-none px-4 py-3">
+                                <div
+                                    class="inline-flex items-center justify-center px-3 h-6 bg-base-content text-base-100 font-black uppercase text-[10px] tracking-widest rounded-full">
                                     {{ str_replace('_', ' ', $task->status) }}
-                                </span>
+                                </div>
                             </div>
 
                             <!-- Due Date -->
@@ -201,8 +205,9 @@
                                         <p class="font-bold text-sm">{{ $task->due_date->format('M d, Y') }}</p>
                                     </div>
                                     @if($task->due_date->isPast() && $task->status !== 'completed')
-                                        <span
-                                            class="badge badge-error badge-sm border-none text-[9px] font-black uppercase tracking-tighter mt-2">Overdue</span>
+                                        <div
+                                            class="inline-flex items-center justify-center px-3 h-6 bg-error text-white text-[10px] font-black uppercase tracking-widest rounded-full mt-2">
+                                            Overdue</div>
                                     @endif
                                 @else
                                     <span class="text-sm text-base-content/40 font-medium">No deadline set</span>
@@ -210,20 +215,20 @@
                             </div>
 
                             <!-- Assigned To -->
-                            @if($task->assignedUser)
+                            @if($task->assignee)
                                 <div>
                                     <p class="text-[10px] font-bold text-base-content/30 uppercase tracking-widest mb-2">
                                         Assigned To</p>
                                     <div class="flex items-center gap-3">
                                         <div class="avatar">
                                             <div class="w-10 h-10 rounded-full ring-2 ring-primary/20">
-                                                <img src="{{ $task->assignedUser->profile_photo_url }}"
-                                                    alt="{{ $task->assignedUser->name }}" />
+                                                <img src="{{ $task->assignee->profile_photo_url }}"
+                                                    alt="{{ $task->assignee->name }}" />
                                             </div>
                                         </div>
                                         <div>
-                                            <p class="font-bold text-sm">{{ $task->assignedUser->name }}</p>
-                                            <p class="text-xs text-base-content/50">{{ $task->assignedUser->email }}</p>
+                                            <p class="font-bold text-sm">{{ $task->assignee->name }}</p>
+                                            <p class="text-xs text-base-content/50">{{ $task->assignee->email }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -243,7 +248,7 @@
                     class="card bg-base-100 shadow-xl shadow-base-content/[0.02] border border-base-content/5 rounded-3xl overflow-hidden">
                     <div class="card-body p-6">
                         <h3
-                            class="font-black text-xs uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
+                            class="font-bold text-xs uppercase tracking-widest text-base-content/40 flex items-center gap-2 mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />

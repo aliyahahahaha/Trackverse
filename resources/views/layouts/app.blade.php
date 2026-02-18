@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8" />
@@ -24,17 +24,44 @@
     <!-- Theme Script -->
     <script type="text/javascript">
         (function () {
-            try {
-                const root = document.documentElement;
-                const savedTheme = localStorage.getItem('theme') || 'system';
-                let resolvedTheme = savedTheme;
-                if (savedTheme === 'system') {
-                    resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const root = document.documentElement;
+            const apply = (theme) => {
+                let resolved = theme;
+                if (theme === 'system') {
+                    resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 }
-                root.setAttribute('data-theme', resolvedTheme);
-            } catch (e) {
-                console.warn('Early theme script error:', e);
-            }
+
+                // Set data-theme for FlyonUI
+                root.setAttribute('data-theme', resolved);
+                root.style.colorScheme = resolved;
+
+                // Add/Remove .dark class for Tailwind dark: utilities
+                if (resolved === 'dark') {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+            };
+
+            const saved = localStorage.getItem('theme') || 'system';
+            apply(saved);
+
+            // Global helper to prevent errors before main JS loads
+            window.setTheme = (theme) => {
+                console.log('Switching theme to:', theme);
+                localStorage.setItem('theme', theme);
+                apply(theme);
+                if (window.themeManager && window.themeManager.updateUIState) {
+                    window.themeManager.updateUIState(theme);
+                }
+            };
+
+            // Listen for system theme changes if set to system
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (localStorage.getItem('theme') === 'system' || !localStorage.getItem('theme')) {
+                    apply('system');
+                }
+            });
         })();
     </script>
     @stack('styles')
@@ -71,12 +98,12 @@
 
                 <footer class="w-full max-w-[1440px] px-8 py-10 mx-auto border-t border-base-content/5 mt-10">
                     <div class="flex items-center justify-between">
-                        <p class="text-base-content/40 font-black uppercase italic tracking-tighter text-[10px]">
+                        <p class="text-base-content/40 font-bold uppercase italic tracking-tighter text-[10px]">
                             &copy;{{ date('Y') }} TrackVerse Platform
                         </p>
                         <div class="flex gap-4">
                             <span
-                                class="text-[9px] font-black uppercase tracking-widest text-base-content/20">Operational
+                                class="text-[9px] font-bold uppercase tracking-widest text-base-content/20">Operational
                                 Status: Healthy</span>
                         </div>
                     </div>
@@ -103,6 +130,8 @@
         });
     </script>
 
+    @include('partials.toast')
+    @include('partials.confirm-modal')
     @stack('scripts')
 </body>
 

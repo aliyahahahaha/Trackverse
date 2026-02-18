@@ -1,34 +1,45 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        <!-- Header Section -->
-        <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="space-y-4">
-                <div class="flex items-center gap-4">
+    <x-slot name="header">
+        <div class="flex flex-col gap-6">
+            <!-- Navigation Switcher (Premium Pill) -->
+            <div class="flex">
+                <div
+                    class="bg-base-100 rounded-full p-1 items-center shadow-sm border border-base-content/5 inline-flex transition-all">
                     <a href="{{ route('tickets.index') }}"
-                        class="btn btn-sm h-9 min-h-0 rounded-full px-5 bg-base-100 hover:bg-primary hover:text-primary-content border border-base-content/10 hover:border-primary gap-2 font-bold shadow-sm group transition-all">
-                        <span
-                            class="text-[10px] uppercase tracking-widest text-base-content/60 group-hover:text-current">←
-                            BACK TO TICKETS</span>
+                        class="px-6 py-2 rounded-full hover:bg-base-200/50 text-base-content/60 font-bold text-[10px] tracking-widest transition-all">
+                        ← BACK TO TICKETS
                     </a>
-                    <div class="h-5 w-px bg-base-content/10"></div>
-                    <span class="text-[10px] font-bold text-base-content/40 uppercase tracking-[0.2em]">Ticket
-                        Details</span>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-black text-base-content tracking-tight flex items-center gap-3">
-                        <div class="size-12 rounded-xl flex items-center justify-center bg-primary/10 text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg>
-                        </div>
-                        Create Ticket
-                    </h1>
-                    <p class="text-sm text-base-content/60 font-bold mt-2 ml-1">Create a new ticket for your team.</p>
+                    <div class="w-px h-8 bg-base-content/5 mx-1"></div>
+                    <div
+                        class="px-6 py-2 rounded-full bg-primary/10 text-primary font-bold text-[10px] tracking-widest transition-all">
+                        NEW TICKET
+                    </div>
                 </div>
             </div>
-        </header>
+
+            <!-- Main Title Content -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-5">
+                    <div
+                        class="size-16 rounded-[1.5rem] bg-primary shadow-2xl shadow-primary/20 flex items-center justify-center text-primary-content shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-8" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5l0 14" />
+                            <path d="M5 12l14 0" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <h1 class="text-3xl font-black text-base-content tracking-tight leading-none">Create Ticket</h1>
+                        <p class="text-[13px] text-base-content/50 font-bold mt-0.5">Define a new support request for
+                            your
+                            team.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </x-slot>
+
+    <div class="py-12 px-6 lg:px-10">
 
         <script>
             window.allSystemUsers = @json($allUsers);
@@ -72,17 +83,17 @@
                                         <p class="text-[10px] text-base-content/40 font-medium leading-none">Choose who
                                             will handle this</p>
                                     </div>
-                                    <!-- Smart Assignment Toggle -->
+                                    <!-- Smart Assignment Indicator -->
                                     <div
-                                        class="flex items-center gap-2 bg-base-200/50 px-2 pointer-events-auto shadow-sm py-1 rounded-lg border border-base-content/5">
-                                        <div class="flex flex-col items-end mr-1">
+                                        class="flex items-center gap-3 bg-white px-3 py-2 rounded-2xl ring-1 ring-base-content/5 shadow-sm">
+                                        <div class="flex flex-col items-end">
                                             <span
-                                                class="text-[8px] font-bold text-base-content/40 uppercase tracking-tighter">Smart</span>
+                                                class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest leading-none">SMART</span>
                                             <span
-                                                class="text-[8px] text-primary font-black italic leading-none">Escalate</span>
+                                                class="text-[10px] text-primary font-black italic leading-none mt-0.5">Escalate</span>
                                         </div>
                                         <input type="checkbox" id="modal_escalate"
-                                            class="toggle toggle-primary toggle-xs"
+                                            class="checkbox checkbox-primary checkbox-sm rounded-lg"
                                             onchange="toggleModalEscalation()" />
                                     </div>
                                 </div>
@@ -100,7 +111,7 @@
                 <div class="card bg-base-100 rounded-2xl ring-1 ring-base-content/5 shadow-sm overflow-hidden">
                     <div class="p-6 border-b border-base-content/5">
                         <h3
-                            class="text-sm font-bold text-base-content italic text-primary/60 uppercase tracking-[0.2em] mb-3">
+                            class="text-sm font-bold text-base-content italic text-primary/60 uppercase tracking-widest mb-3">
                             01. Ticket Details</h3>
                         <div class="space-y-6">
                             <!-- Title -->
@@ -109,7 +120,7 @@
                                     class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">Ticket
                                     Title</label>
                                 <input type="text" name="title" required
-                                    class="input bg-base-200/30 border-base-content/10 w-full rounded-xl transition-all font-bold text-base placeholder:text-base-content/20 focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5"
+                                    class="input bg-base-200/30 border-base-content/10 w-full rounded-xl transition-all font-bold text-base placeholder:text-base-content/20 placeholder:font-black focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5"
                                     placeholder="Enter title..." />
                             </div>
 
@@ -118,7 +129,7 @@
                                 <label
                                     class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">Description</label>
                                 <textarea name="description" rows="6" required
-                                    class="textarea bg-base-200/30 border-base-content/10 w-full rounded-2xl transition-all font-medium text-sm leading-relaxed resize-none focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5 h-48"
+                                    class="textarea bg-base-200/30 border-base-content/10 w-full rounded-2xl transition-all font-medium text-sm leading-relaxed resize-none focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/5 h-48 placeholder:text-base-content/20 placeholder:font-black"
                                     placeholder="Provide detailed description..."></textarea>
                             </div>
                         </div>
@@ -126,7 +137,7 @@
 
                     <div class="p-6">
                         <h3
-                            class="text-sm font-bold text-base-content italic text-success/60 uppercase tracking-[0.2em] mb-4">
+                            class="text-sm font-bold text-base-content italic text-success/60 uppercase tracking-widest mb-4">
                             02. Priority & Classification</h3>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <!-- Priority Levels -->
@@ -186,10 +197,10 @@
                                         class="text-[10px] font-bold text-base-content/40 uppercase tracking-widest">Category</label>
                                     @php
                                         $categoryOptions = [
-                                            ['value' => 'Bug', 'label' => 'Bug Report', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-error/10 text-error font-black italic">!</div>'],
-                                            ['value' => 'Feature Request', 'label' => 'Feature Request', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-info/10 text-info font-black italic">+</div>'],
-                                            ['value' => 'Technical Support', 'label' => 'Technical Support', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-warning/10 text-warning font-black italic">?</div>'],
-                                            ['value' => 'Other', 'label' => 'Other', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-base-content/10 text-base-content font-black italic">•</div>']
+                                            ['value' => 'Bug', 'label' => 'Bug Report', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-error/10 text-error font-bold italic">!</div>'],
+                                            ['value' => 'Feature Request', 'label' => 'Feature Request', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-info/10 text-info font-bold italic">+</div>'],
+                                            ['value' => 'Technical Support', 'label' => 'Technical Support', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-warning/10 text-warning font-bold italic">?</div>'],
+                                            ['value' => 'Other', 'label' => 'Other', 'icon' => '<div class="size-5 rounded flex items-center justify-center text-[10px] bg-base-content/10 text-base-content font-bold italic">•</div>']
                                         ];
                                     @endphp
                                     <x-ui.advance-select name="category" placeholder="Choose category..."
@@ -252,29 +263,29 @@
                             <div class="grid grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-12">
                                 <div class="space-y-1.5">
                                     <span
-                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-[0.2em] italic leading-none">Project</span>
+                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest italic leading-none">Project</span>
                                     <p id="summary-project" class="text-sm font-bold text-base-content truncate">—</p>
                                 </div>
                                 <div class="space-y-1.5">
                                     <span
-                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-[0.2em] italic leading-none">Assignee</span>
+                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest italic leading-none">Assignee</span>
                                     <p id="summary-member" class="text-sm font-bold text-base-content truncate">—</p>
                                 </div>
                                 <div class="space-y-1.5">
                                     <span
-                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-[0.2em] italic leading-none">Priority</span>
+                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest italic leading-none">Priority</span>
                                     <div><span id="summary-priority"
                                             class="badge badge-sm font-bold uppercase text-[9px] tracking-widest h-5 py-0 border-0">—</span>
                                     </div>
                                 </div>
                                 <div class="space-y-1.5">
                                     <span
-                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-[0.2em] italic leading-none">Category</span>
+                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest italic leading-none">Category</span>
                                     <p id="summary-category" class="text-xs font-bold text-base-content">—</p>
                                 </div>
                                 <div class="col-span-2 space-y-1.5">
                                     <span
-                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-[0.2em] italic leading-none">Title</span>
+                                        class="text-[9px] font-bold text-base-content/30 uppercase tracking-widest italic leading-none">Title</span>
                                     <p id="summary-title" class="text-sm font-bold text-base-content line-clamp-1">—</p>
                                 </div>
                             </div>
@@ -283,8 +294,8 @@
                         <div class="flex flex-col items-center lg:items-end gap-3 min-w-[240px]">
                             <button type="submit"
                                 class="btn btn-primary btn-lg rounded-2xl w-full px-12 group shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all h-16 border-0">
-                                <span class="flex items-center gap-3 font-black uppercase tracking-[0.2em] text-xs">
-                                    Create Ticket
+                                <span class="flex items-center gap-3 font-bold uppercase tracking-widest text-xs">
+                                    CREATE TICKET
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                         class="size-4 group-hover:translate-x-1 transition-transform"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"
@@ -295,8 +306,10 @@
                                     </svg>
                                 </span>
                             </button>
-                            <p class="text-[10px] font-bold text-base-content/30 italic">Please review before creating
-                            </p>
+                            <a href="{{ route('tickets.index') }}"
+                                class="btn bg-[#1e293b] hover:bg-[#334155] h-12 w-full rounded-2xl font-bold uppercase text-[10px] tracking-widest text-white border-none transition-all">
+                                CANCEL
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -331,18 +344,23 @@
                     if (!user || !user.id) return;
                     const opt = document.createElement('option');
                     opt.value = user.id;
-                    opt.text = user.name || 'Unknown';
-                    const avatar = user.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(opt.text)}&background=random`;
+
+                    const status = (user.current_status || 'available').toLowerCase();
+                    let statusLabel = 'AVAILABLE';
+                    if (status === 'on_leave' || status === 'away') statusLabel = 'ON LEAVE';
+                    else if (status === 'busy') statusLabel = 'BUSY';
+
+                    const name = user.name || 'Unknown';
+                    // This sets the innerText which Preline uses for the display title
+                    opt.text = `${name} (${statusLabel})`;
+
+                    const avatar = user.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
+
                     opt.setAttribute('data-select-option', JSON.stringify({
-                        description: user.email || '',
-                        icon: `<img class="w-full h-full object-cover rounded" src="${avatar}" />`
+                        description: `${statusLabel} • ${user.email || ''}`,
+                        icon: `<img class="w-full h-full object-cover rounded-xl" src="${avatar}" />`
                     }));
-                    if (user.today_availability) {
-                        const s = user.today_availability.status;
-                        if (s === 'medical_leave') opt.text += ' (Leave)';
-                        else if (s === 'vacation') opt.text += ' (Vacation)';
-                        else if (s === 'present') opt.text += ' (Available)';
-                    }
+
                     mEl.appendChild(opt);
                 });
             }
@@ -380,18 +398,18 @@
                 // 5. Reinitialize with a slight delay to ensure DOM is ready
                 setTimeout(() => {
                     const newInstance = new HSSelect(el, config);
-                    
+
                     // 6. Add manual handlers to ensure dropdown works properly
                     setTimeout(() => {
                         const toggle = parent.querySelector('.advance-select-toggle, button[data-hs-select-toggle]');
                         const menu = parent.querySelector('.advance-select-menu, .hs-select-menu');
-                        
+
                         if (toggle && menu) {
                             // Add toggle click handler
-                            toggle.addEventListener('click', function(e) {
-                                const isHidden = menu.classList.contains('hidden') || 
-                                               getComputedStyle(menu).display === 'none';
-                                
+                            toggle.addEventListener('click', function (e) {
+                                const isHidden = menu.classList.contains('hidden') ||
+                                    getComputedStyle(menu).display === 'none';
+
                                 if (isHidden) {
                                     menu.classList.remove('hidden');
                                     menu.style.display = 'block';
@@ -404,27 +422,27 @@
                                     toggle.setAttribute('aria-expanded', 'false');
                                 }
                             });
-                            
+
                             // Handle option clicks
                             const options = menu.querySelectorAll('.advance-select-option, [data-value]');
                             options.forEach(option => {
-                                option.addEventListener('click', function(e) {
+                                option.addEventListener('click', function (e) {
                                     const value = this.getAttribute('data-value');
                                     if (value) {
                                         el.value = value;
                                         el.dispatchEvent(new Event('change', { bubbles: true }));
-                                        
+
                                         // Close the menu
                                         menu.classList.add('hidden');
                                         menu.style.display = 'none';
                                         toggle.setAttribute('aria-expanded', 'false');
-                                        
+
                                         // Update summary
                                         if (typeof syncSummary === 'function') syncSummary();
                                     }
                                 });
                             });
-                            
+
                             // Close dropdown when clicking outside
                             document.addEventListener('click', function closeDropdown(e) {
                                 if (!parent.contains(e.target)) {
@@ -434,7 +452,7 @@
                                 }
                             });
                         }
-                        
+
                         // Update summary
                         if (typeof syncSummary === 'function') syncSummary();
                     }, 100);

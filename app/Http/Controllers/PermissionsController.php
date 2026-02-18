@@ -11,114 +11,37 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-        // Mock Data for UI Demonstration
         $roles = [
             ['name' => 'Admin', 'key' => 'admin', 'color' => 'primary'],
+            ['name' => 'Director', 'key' => 'director', 'color' => 'warning'],
             ['name' => 'Team Leader', 'key' => 'team_leader', 'color' => 'secondary'],
             ['name' => 'User', 'key' => 'user', 'color' => 'info']
         ];
 
-        $permissions = [
-            // Project Management
-            [
-                'id' => 1,
-                'name' => 'View Projects',
-                'description' => 'Can view project details',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
-            ],
-            [
-                'id' => 2,
-                'name' => 'Create Projects',
-                'description' => 'Can create new projects',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
-            [
-                'id' => 3,
-                'name' => 'Edit Projects',
-                'description' => 'Can update project details',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
-            [
-                'id' => 4,
-                'name' => 'Delete Projects',
-                'description' => 'Can remove existing projects',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
+        // Gather permissions from Config
+        $groups = config('permissions.groups');
+        $permissions = [];
 
-            // Task Management
-            [
-                'id' => 5,
-                'name' => 'Create Tasks',
-                'description' => 'Can assign new tasks',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
-            ],
-            [
-                'id' => 6,
-                'name' => 'Edit Tasks',
-                'description' => 'Can modify task details',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
-            ],
-            [
-                'id' => 7,
-                'name' => 'Delete Tasks',
-                'description' => 'Can remove tasks',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
+        foreach ($groups as $group) {
+            foreach ($group['permissions'] as $key => $details) {
+                // Determine current active roles for this permission
+                $activeRoles = \App\Models\RolePermission::where('permission', $key)
+                    ->pluck('role')
+                    ->toArray();
 
-            // Ticket Management
-            [
-                'id' => 8,
-                'name' => 'Create Tickets',
-                'description' => 'Can raise support tickets',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => true]
-            ],
-            [
-                'id' => 9,
-                'name' => 'Resolve Tickets',
-                'description' => 'Can mark tickets as resolved',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
-            [
-                'id' => 10,
-                'name' => 'Delete Tickets',
-                'description' => 'Can permanently remove tickets',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
+                $rolesState = [];
+                foreach ($roles as $role) {
+                    $rolesState[$role['key']] = in_array($role['key'], $activeRoles);
+                }
 
-            // User Management
-            [
-                'id' => 11,
-                'name' => 'Manage Users',
-                'description' => 'Can add, edit, or remove users',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
-            [
-                'id' => 12,
-                'name' => 'Manage Roles',
-                'description' => 'Can assign roles to users',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
-
-            // System Features
-            [
-                'id' => 13,
-                'name' => 'Manage Announcements',
-                'description' => 'Can post system-wide announcements',
-                'roles' => ['admin' => true, 'team_leader' => false, 'user' => false]
-            ],
-            [
-                'id' => 14,
-                'name' => 'Manage Deployments',
-                'description' => 'Access to deployment controls',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
-            [
-                'id' => 15,
-                'name' => 'View Reports',
-                'description' => 'Access to analytics and system reports',
-                'roles' => ['admin' => true, 'team_leader' => true, 'user' => false]
-            ],
-        ];
+                $permissions[] = [
+                    'id' => $key, // Using slug as ID
+                    'name' => $details['name'],
+                    'description' => $details['description'],
+                    'roles' => $rolesState
+                ];
+            }
+        }
 
         return view('permissions.index', compact('roles', 'permissions'));
     }
@@ -130,6 +53,7 @@ class PermissionsController extends Controller
     {
         $roles = [
             ['name' => 'Admin', 'key' => 'admin', 'color' => 'primary'],
+            ['name' => 'Director', 'key' => 'director', 'color' => 'warning'],
             ['name' => 'Team Leader', 'key' => 'team_leader', 'color' => 'secondary'],
             ['name' => 'User', 'key' => 'user', 'color' => 'info']
         ];
@@ -142,8 +66,49 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        // In a real app, this would validate and save to DB
-        return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+            'roles' => 'nullable|array',
+            'roles.*' => 'in:admin,director,team_leader,user'
+        ]);
+
+        // Generate permission key from name (lowercase, underscores)
+        $permissionKey = strtolower(str_replace(' ', '_', $validated['name']));
+
+        // Check if permission already exists in config
+        $groups = config('permissions.groups');
+        foreach ($groups as $group) {
+            if (isset($group['permissions'][$permissionKey])) {
+                return redirect()->back()->withErrors(['name' => 'A permission with this name already exists.'])->withInput();
+            }
+        }
+
+        // Add to database for selected roles (Admin always gets all permissions)
+        $rolesToAssign = $validated['roles'] ?? [];
+
+        // Always add admin
+        \App\Models\RolePermission::firstOrCreate([
+            'role' => 'admin',
+            'permission' => $permissionKey
+        ]);
+
+        // Add other selected roles
+        foreach ($rolesToAssign as $roleKey => $value) {
+            if ($roleKey !== 'admin') {
+                \App\Models\RolePermission::firstOrCreate([
+                    'role' => $roleKey,
+                    'permission' => $permissionKey
+                ]);
+            }
+        }
+
+        // Note: In a production environment, you would also update the config/permissions.php file
+        // This could be done by writing to the file or using a database-driven permission system
+        // For now, we're just adding to the role_permissions table
+
+        return redirect()->route('permissions.index')->with('success', 'Permission added to database successfully! To make it appear in the list, please add it to config/permissions.php manually.');
+
     }
 
     /**
@@ -151,7 +116,46 @@ class PermissionsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // In a real app, this would update the role-permission association
+        // Expecting input: permissions[perm_key][role_key] = "on" (if checked)
+        $input = $request->input('permissions', []);
+
+        // Get all possible permissions to ensure we can turn OFF unchecked ones
+        $allPermissions = [];
+        $groups = config('permissions.groups');
+        foreach ($groups as $group) {
+            foreach ($group['permissions'] as $key => $d) {
+                $allPermissions[] = $key;
+            }
+        }
+
+        $definedRoles = ['admin', 'director', 'team_leader', 'user'];
+
+        foreach ($allPermissions as $permKey) {
+            foreach ($definedRoles as $roleKey) {
+                // Admin always has all permissions (business rule protection)
+                if ($roleKey === 'admin') {
+                    \App\Models\RolePermission::firstOrCreate([
+                        'role' => 'admin',
+                        'permission' => $permKey
+                    ]);
+                    continue;
+                }
+
+                $shouldHave = isset($input[$permKey][$roleKey]);
+
+                if ($shouldHave) {
+                    \App\Models\RolePermission::firstOrCreate([
+                        'role' => $roleKey,
+                        'permission' => $permKey
+                    ]);
+                } else {
+                    \App\Models\RolePermission::where('role', $roleKey)
+                        ->where('permission', $permKey)
+                        ->delete();
+                }
+            }
+        }
+
         return redirect()->route('permissions.index')->with('success', 'Permissions updated successfully.');
     }
 }

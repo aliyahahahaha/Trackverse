@@ -28,60 +28,121 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Ensure FlyonUI modals work correctly
-        const modalTriggers = document.querySelectorAll('[data-overlay]');
+        // Helper to find the main scrollable container
+        const getScrollContainer = () => document.querySelector('.custom-scrollbar.overflow-y-auto') || document.querySelector('#layout-main-container div.overflow-y-auto');
 
-        modalTriggers.forEach(trigger => {
-            trigger.addEventListener('click', function (e) {
-                e.preventDefault();
-                const modalId = this.getAttribute('data-overlay');
-                const modal = document.querySelector(modalId);
+        // Helper to perform a deep clean of all modal states
+        const cleanAllModalStates = () => {
+            // Restore scroll
+            const scrollContainer = getScrollContainer();
+            if (scrollContainer) {
+                scrollContainer.style.overflow = '';
+            }
 
-                if (modal) {
-                    // Remove hidden class and add open class
-                    modal.classList.remove('hidden');
-                    modal.classList.add('open');
-                    modal.setAttribute('open', '');
+            // Remove scroll lock from body/html if library added it
+            document.body.classList.remove('overlay-open', 'overflow-hidden');
+            document.documentElement.classList.remove('overlay-open', 'overflow-hidden');
 
-                    // Force reflow to ensure transition works
-                    modal.offsetHeight;
-
-                    // Set styles directly as fallback
-                    modal.style.opacity = '1';
-                    modal.style.visibility = 'visible';
-                    modal.style.display = 'flex';
-
-                    // Prevent body scroll
-                    document.body.style.overflow = 'hidden';
-                }
+            // CRITICAL: Kill ALL types of backdrop elements
+            document.querySelectorAll('.hs-overlay-backdrop, .overlay-backdrop, [id$="-backdrop"]').forEach(el => {
+                el.remove();
             });
-        });
+        };
 
-        // Handle modal close buttons
+        // Open Logic
         document.addEventListener('click', function (e) {
-            const closeBtn = e.target.closest('[data-overlay^="#"]');
-            if (closeBtn && closeBtn.closest('.modal')) {
-                const modal = closeBtn.closest('.modal');
-                modal.classList.remove('open');
-                modal.classList.add('hidden');
-                modal.removeAttribute('open');
-                modal.style.opacity = '';
-                modal.style.visibility = '';
-                modal.style.display = '';
-                document.body.style.overflow = '';
+            const trigger = e.target.closest('[data-overlay]');
+            if (!trigger || trigger.closest('.modal')) return; // Ignore if inside modal (usually close btns)
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const modalId = trigger.getAttribute('data-overlay');
+            const modal = document.querySelector(modalId);
+
+            if (modal) {
+                // If the library JS exists and it's a standard one, let it handle (or force it)
+                if (window.HSOverlay && typeof window.HSOverlay.open === 'function') {
+                    window.HSOverlay.open(modal);
+                }
+
+                // CRITICAL: Remove hidden class and inline styles FIRST
+                modal.classList.remove('hidden');
+                modal.classList.add('open', 'overlay-open');
+                modal.setAttribute('open', '');
+
+                // Then set the display styles (this overrides any previous display:none)
+                modal.style.display = 'flex';
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.pointerEvents = 'auto';
+                modal.style.zIndex = '9999';
+
+                const scrollContainer = getScrollContainer();
+                if (scrollContainer) {
+                    scrollContainer.style.overflow = 'hidden';
+                }
             }
         });
 
-        // Close modal when clicking backdrop
+        // Close Logic (Universal)
+        const closeOverlay = (modal) => {
+            if (!modal) return;
+
+            // Try library close first
+            if (window.HSOverlay && typeof window.HSOverlay.close === 'function') {
+                window.HSOverlay.close(modal);
+            }
+
+            modal.classList.remove('open', 'overlay-open');
+            modal.classList.add('hidden');
+            modal.removeAttribute('open');
+
+            // CRITICAL: Set display to none explicitly (not empty string)
+            modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+
+            cleanAllModalStates();
+        };
+
+        // Handle close triggers
+        document.addEventListener('click', function (e) {
+            // Only target elements specifically meant to close modals
+            const closeTrigger = e.target.closest('[data-close-modal], .modal-close-btn');
+            if (closeTrigger) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const modalId = closeTrigger.getAttribute('data-close-modal');
+                let modal = null;
+                
+                if (modalId) {
+                    modal = document.querySelector(modalId);
+                } else {
+                    // Fallback: find the closest modal parent
+                    modal = closeTrigger.closest('.modal');
+                }
+                
+                if (modal) {
+                    closeOverlay(modal);
+                }
+            }
+        });
+
+        // Backdrop click
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('overlay') && e.target.classList.contains('modal')) {
-                e.target.classList.remove('open');
-                e.target.classList.add('hidden');
-                e.target.removeAttribute('open');
-                e.target.style.opacity = '';
-                e.target.style.visibility = '';
-                e.target.style.display = '';
-                document.body.style.overflow = '';
+                closeOverlay(e.target);
+            }
+        });
+
+        // ESC key support
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const openModal = document.querySelector('.modal.open, .modal[open], .modal.overlay-open');
+                if (openModal) closeOverlay(openModal);
             }
         });
     });

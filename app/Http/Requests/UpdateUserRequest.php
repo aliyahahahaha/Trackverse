@@ -34,7 +34,7 @@ class UpdateUserRequest extends FormRequest
 
         // Only allow admins to change roles
         if (auth()->check() && auth()->user()->isAdmin()) {
-            $rules['role'] = ['required', 'string', Rule::in(['admin', 'team_leader', 'user'])];
+            $rules['role'] = ['required', 'string', Rule::in(['admin', 'director', 'team_leader', 'user'])];
         }
 
         return $rules;

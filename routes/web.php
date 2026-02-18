@@ -8,12 +8,22 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
+// Temporary route to clear cache - REMOVE AFTER USE
+Route::get('/clear-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+
+    return 'Cache cleared successfully! You can now close this page and refresh your dashboard.';
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
 
         // Projects base query based on role
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isDirector()) {
             $projectQuery = \App\Models\Project::query();
             $taskQuery = \App\Models\Task::query();
         } elseif ($user->isTeamLeader()) {
